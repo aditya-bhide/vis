@@ -5,7 +5,13 @@ const width = +svg.attr('width');
 
 const render = data => {
     const xValue = d => d.population;
+    const xAxisLabel = 'Population';
+
     const yValue = d => d.country;
+    const yAxisLabel = 'Country';
+
+    const title = `${xAxisLabel} VS ${yAxisLabel}`
+
     const margin = { top: 60, bottom: 80, right: 40, left: 180 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -28,7 +34,6 @@ const render = data => {
     const xAxis = d3.axisBottom(xScale)
         .tickFormat(xAxisTickFormat)
         .tickSize(-innerHeight)
-
 
     g.append('g')
         .call(d3.axisLeft(yScale))
@@ -54,7 +59,7 @@ const render = data => {
     g.append('text')
         .attr('y', -15)
         .attr('fill', 'black ')
-        .text('Top 10 Most Populous Contries');
+        .text(title);
 }
 d3.csv('data.csv', (data) => {
     data.forEach(d => {
