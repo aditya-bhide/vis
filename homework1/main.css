@@ -1,0 +1,23 @@
+body {
+    margin: 0px;
+    overflow: hidden;
+}
+
+rect {
+    fill: steelblue;
+}
+
+circle {
+    fill: red;
+    opacity: 0.5;
+}
+
+text {
+    font-size: 3em;
+    font-family: sans-serif;
+}
+
+.tick text {
+    font-size: 2.7em;
+    fill: #635f5d
+}
