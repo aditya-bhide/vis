@@ -13,11 +13,23 @@ circle {
 }
 
 text {
-    font-size: 3em;
+    font-size: 4.5em;
     font-family: sans-serif;
 }
 
 .tick text {
     font-size: 2.7em;
     fill: #635f5d
+}
+
+.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 0.5rem;
+    margin-top: -20px;
+    border: 1px solid #313639;
+    border-radius: 8px;
+    font: 10px sans-serif;
+    background: #ddd;
+    pointer-events: none;
 }
