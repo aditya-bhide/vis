@@ -1,97 +1,97 @@
-const svg = d3.select('svg');
+function bar_chart() {
+    const svg = d3.select('svg');
+    const height = +svg.attr('height');
+    const width = +svg.attr('width');
 
-const height = +svg.attr('height');
-const width = +svg.attr('width');
+    const render = data => {
 
-const render = data => {
-    const xValue = d => d.horsepower;
-    const xAxisLabel = 'Horsepower';
+        const xValue = d => d.country;
+        const xAxisLabel = 'Countries'
 
-    const yValue = d => d.weight;
-    const yAxisLabel = 'Weight';
+        const yValue = d => d.population;
+        const yAxisLabel = 'Population'
 
-    const title = `${xAxisLabel} VS ${yAxisLabel}`
+        const margin = { top: 20, bottom: 60, right: 20, left: 100 };
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
 
-    const circleRadius = 7
+        const xScale = d3.scaleBand()
+            .domain(data.map(xValue))
+            .range([0, innerWidth])
+            .padding(0.4);
 
-    const margin = { top: 60, bottom: 80, right: 40, left: 180 };
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+        const yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, yValue)])
+            .range([innerHeight, 0])
+            .nice();
 
-    const xScale = d3.scaleLinear()
-        .domain(d3.extent(data, xValue))
-        .range([0, innerWidth])
-        .nice();
+        const g = svg.append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-    const yScale = d3.scaleLinear()
-        .domain(d3.extent(data, yValue))
-        .range([0, innerHeight])
-        .nice();
+        const xAxis = g.append('g')
+            .call(d3.axisBottom(xScale))
+            .style('font-size', '0.35em')
+            .attr('transform', `translate(0, ${innerHeight})`);
 
-    const g = svg.append('g')
-        .attr('transform', `translate(${margin.left}, ${margin.top})`)
+        const yAxisTickFormat = number =>
+            d3.format('.3s')(number)
+            .replace('G', 'B');
 
-    const xAxisTickFormat = number =>
-        d3.format('.3s')(number)
-        .replace('G', 'B');
+        const yAxis = g.append('g')
+            .call(d3.axisLeft(yScale).tickFormat(yAxisTickFormat))
+            .style('font-size', '0.35em');
 
-    const xAxis = d3.axisBottom(xScale)
-        .tickFormat(xAxisTickFormat)
-        .tickSize(-innerHeight)
-        .tickPadding(20);
+        xAxis.append('text')
+            .attr('fill', 'black')
+            .attr('y', 50)
+            .attr('x', innerWidth / 2)
+            .text(xAxisLabel);
 
+        yAxis.append('text')
+            .attr('fill', 'black')
+            .attr('y', -70)
+            .attr('x', -innerHeight / 2)
+            .text(yAxisLabel)
+            .style('text-anchor', 'middle')
+            .attr('transform', 'rotate(-90)');
 
-    const yAxis = d3.axisLeft(yScale)
-        .tickSize(-innerWidth)
-        .tickPadding(10);
-
-    const xAxisG = g.append('g')
-        .call(xAxis)
-        .attr('transform', `translate(0, ${innerHeight})`);
-
-    xAxisG.select('.domain').remove();
-
-    xAxisG.append('text')
-        .attr('fill', 'black')
-        .attr('y', 70)
-        .attr('x', innerWidth / 2)
-        .text(xAxisLabel);
-
-    const yAxisG = g.append('g')
-        .call(yAxis);
-
-    yAxisG.selectAll('.domain').remove();
-
-    yAxisG.append('text')
-        .attr('fill', 'black')
-        .attr('y', -90)
-        .attr('x', -innerHeight / 2)
-        .text(yAxisLabel)
-        .style('text-anchor', 'middle')
-        .attr('transform', 'rotate(-90)');
+        g.selectAll('rect').data(data)
+            .enter().append('rect')
+            .attr('x', d => xScale(xValue(d)))
+            .attr('y', d => yScale(yValue(d)))
+            .attr('width', xScale.bandwidth())
+            .attr('height', d => innerHeight - yScale(yValue(d)))
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove)
+            .on("mouseout", mouseout);
 
 
-    g.selectAll('circle').data(data)
-        .enter().append('circle')
-        .attr('cy', d => yScale(yValue(d)))
-        .attr('cx', d => xScale(xValue(d)))
-        .attr('r', circleRadius);
+        var div = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("display", "none");
 
-    g.append('text')
-        .attr('y', -15)
-        .attr('fill', 'black ')
-        .text(title);
-}
-d3.csv('https://vizhub.com/curran/datasets/auto-mpg.csv', (data) => {
-    data.forEach(d => {
-        d.mpg = +d.mpg;
-        d.cylinders = +d.cylinders;
-        d.displacement = +d.displacement;
-        d.weight = +d.weight;
-        d.horsepower = +d.horsepower;
-        d.acceleration = +d.acceleration;
-        d.year = +d.year;
+        function mouseover(d) {
+            d3.select(this).style('fill', 'red');
+            div.style("display", "inline");
+            div.text(d.population)
+        }
 
+        function mousemove() {
+            d3.select(this).style('fill', 'red');
+            div.style("left", (d3.event.pageX - 34) + "px")
+                .style("top", (d3.event.pageY - 12) + "px");
+        }
+
+        function mouseout() {
+            d3.select(this).style('fill', 'steelblue');
+            div.style("display", "none");
+        }
+    }
+
+    d3.csv('data.csv', (data) => {
+        data.forEach(d => {
+            d.population = +d.population * 1000;
+        });
+        render(data)
     });
-    render(data)
-});
+}
