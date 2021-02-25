@@ -1,5 +1,5 @@
 function scatter_plot(x_attribute, y_attribute) {
-    const svg = d3.select('#scatterplotrender');
+    const svg = d3.select('#scatterplot-svg');
 
     const height = +svg.attr('height');
     const width = +svg.attr('width');
@@ -15,7 +15,7 @@ function scatter_plot(x_attribute, y_attribute) {
 
         const circleRadius = 7
 
-        const margin = { top: 60, bottom: 80, right: 40, left: 180 };
+        const margin = { top: 60, bottom: 80, right: 40, left: 160 };
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
@@ -48,6 +48,7 @@ function scatter_plot(x_attribute, y_attribute) {
 
         const xAxisG = g.append('g')
             .call(xAxis)
+            .style('font-size', '0.3em')
             .attr('transform', `translate(0, ${innerHeight})`);
 
         xAxisG.select('.domain').remove();
@@ -59,13 +60,14 @@ function scatter_plot(x_attribute, y_attribute) {
             .text(xAxisLabel);
 
         const yAxisG = g.append('g')
-            .call(yAxis);
+            .call(yAxis)
+            .style('font-size', '0.3em');
 
         yAxisG.selectAll('.domain').remove();
 
         yAxisG.append('text')
             .attr('fill', 'black')
-            .attr('y', -90)
+            .attr('y', -75)
             .attr('x', -innerHeight / 2)
             .text(yAxisLabel)
             .style('text-anchor', 'middle')
@@ -81,6 +83,8 @@ function scatter_plot(x_attribute, y_attribute) {
         g.append('text')
             .attr('y', -15)
             .attr('fill', 'black ')
+            .attr('transform', "translate(" + innerHeight / 2 + "," + " 0)")
+            .style('font-size', '2em')
             .text(title);
     }
     d3.csv('https://vizhub.com/curran/datasets/auto-mpg.csv', (data) => {
@@ -92,46 +96,42 @@ function scatter_plot(x_attribute, y_attribute) {
     });
 }
 
-function callscatter() {
-    var ul = document.getElementById("scatterplotgraph");
-    var li = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    li.setAttribute("id", "scatterplotrender")
-    li.setAttribute('width', 900)
-    li.setAttribute('height', 500)
-    li.textContent = "Hello, world!";
+function callscatterplot() {
+    let ul = document.getElementById("scatterplotgraph");
+    let li = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    li.setAttribute("id", "scatterplot-svg")
+    li.setAttribute('width', svg_width)
+    li.setAttribute('height', svg_height)
     ul.appendChild(li)
     scatter_plot('weight', 'weight')
 
+    let x_value = "weight"
+    let y_value = "weight"
 
-    $('input:radio').on('click', function(e) {
-        let x_attr_radio = document.getElementsByName('xAxis')
-        let y_attr_radio = document.getElementsByName('yAxis')
-        let x_attr = null
-        let y_attr = null
-        for (let i = 0; i < x_attr_radio.length; i++) {
-            if (x_attr_radio[i].checked) {
-                x_attr = x_attr_radio[i].value;
-                break;
+    $("#scatterplot-set-attribute").change(function() {
+        let selected = document.getElementById("scatterplot-set-attribute");
+        let select_axis = document.getElementsByName('axis');
+        for (let i = 0; i < select_axis.length; i++) {
+            if (select_axis[i].checked) {
+                if (select_axis[i].value == 'xAxis') {
+                    x_value = selected.value
+                } else {
+                    y_value = selected.value
+                }
             }
         }
-        for (let i = 0; i < y_attr_radio.length; i++) {
-            if (y_attr_radio[i].checked) {
-                y_attr = y_attr_radio[i].value;
-                break;
-            }
-        }
-        var svg = d3.select("#scatterplotrender");
+        $("#radio-xAxis-value").html(x_value);
+        $("#radio-yAxis-value").html(y_value);
+
+        let svg = d3.select("#scatterplot-svg");
         svg.selectAll("*").remove();
-        var temp = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        li.setAttribute("id", "scatterplotrender")
-        temp.setAttribute('width', 900)
-        temp.setAttribute('height', 500)
-        temp.setAttribute('color', 'red')
+        let temp = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        li.setAttribute("id", "scatterplot-svg")
+        temp.setAttribute('width', svg_width)
+        temp.setAttribute('height', svg_height)
         ul.appendChild(li)
-
-        console.log(x_attr)
-        console.log(y_attr)
-        scatter_plot(x_attr, y_attr)
-
+        scatter_plot(x_value, y_value)
     });
+
+
 }

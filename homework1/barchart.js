@@ -1,15 +1,13 @@
-function bar_chart() {
-    const svg = d3.select('svg');
+function bar_chart(attribute) {
+    const svg = d3.select('#barchart-svg');
     const height = +svg.attr('height');
     const width = +svg.attr('width');
-
     const render = data => {
+        const xValue = d => d[attribute];
+        const xAxisLabel = attribute
 
-        const xValue = d => d.country;
-        const xAxisLabel = 'Countries'
-
-        const yValue = d => d.population;
-        const yAxisLabel = 'Population'
+        const yValue = d => d.count;
+        const yAxisLabel = 'Count'
 
         const margin = { top: 20, bottom: 60, right: 20, left: 100 };
         const innerWidth = width - margin.left - margin.right;
@@ -73,7 +71,7 @@ function bar_chart() {
         function mouseover(d) {
             d3.select(this).style('fill', 'red');
             div.style("display", "inline");
-            div.text(d.population)
+            div.text(`Count : ${yValue(d) + 1}`)
         }
 
         function mousemove() {
@@ -88,10 +86,50 @@ function bar_chart() {
         }
     }
 
-    d3.csv('data.csv', (data) => {
-        data.forEach(d => {
-            d.population = +d.population * 1000;
+    d3.csv('https://vizhub.com/curran/datasets/auto-mpg.csv', (data) => {
+        // define count object that holds count for each city
+        let countObj = {};
+
+        // count how much each city occurs in list and store in countObj
+        data.forEach(function(d) {
+            let attr = d[attribute];
+            if (countObj[attr] === undefined) {
+                countObj[attr] = 0;
+            } else {
+                countObj[attr] = countObj[attr] + 1;
+            }
+        });
+        console.log(countObj)
+            // now store the count in each data member
+        data.forEach(function(d) {
+            let attr = d[attribute];
+            d.count = countObj[attr];
         });
         render(data)
+    });
+}
+
+function callbarchart() {
+    let ul = document.getElementById("barchartgraph");
+    let li = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    li.setAttribute("id", "barchart-svg")
+    li.setAttribute('width', svg_width)
+    li.setAttribute('height', svg_height)
+    ul.appendChild(li)
+    bar_chart('origin');
+
+    let attribute_value = 'origin'
+
+    $("#histogram-set-attribute").change(function() {
+        attribute_value = document.getElementById("barchart-set-attribute").value;
+        let svg = d3.select("#barchart-svg");
+        svg.selectAll("*").remove();
+        let temp = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        li.setAttribute("id", "barchart-svg")
+        temp.setAttribute('width', svg_width)
+        temp.setAttribute('height', svg_height)
+        ul.appendChild(li)
+
+        bar_chart(attribute_value)
     });
 }
