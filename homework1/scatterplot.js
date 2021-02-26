@@ -18,40 +18,58 @@ function scatter_plot(x_attribute, y_attribute) {
         const margin = { top: 60, bottom: 80, right: 40, left: 160 };
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
+        let xScale = null
+        let yScale = null
 
-        const xScale = d3.scaleLinear()
-            .domain(d3.extent(data, xValue))
-            .range([0, innerWidth])
-            .nice();
+        if (categorical.includes(x_attribute)) {
+            xScale = d3.scalePoint()
+                .domain(data.map(function(d) {
+                    return d.x_attr
+                }))
+                .rangeRound([0, innerWidth])
+                .padding(.5);
+        } else {
+            xScale = d3.scaleLinear()
+                .domain(d3.extent(data, xValue))
+                .range([0, innerWidth])
+                .nice();
+        }
 
-        const yScale = d3.scaleLinear()
-            .domain(d3.extent(data, yValue))
-            .range([0, innerHeight])
-            .nice();
+        if (categorical.includes(y_attribute)) {
+            yScale = d3.scalePoint()
+                .domain(data.map(function(d) {
+                    return d.y_attr
+                }))
+                .rangeRound([innerHeight, 0])
+                .padding(.5);
+        } else {
+            yScale = d3.scaleLinear()
+                .domain(d3.extent(data, yValue))
+                .range([innerHeight, 0])
+                .nice();
+        }
 
-        const g = svg.append('g')
-            .attr('transform', `translate(${margin.left}, ${margin.top})`)
-
-        const xAxisTickFormat = number =>
-            d3.format('.3s')(number)
-            .replace('G', 'B');
-
-        const xAxis = d3.axisBottom(xScale)
-            .tickFormat(xAxisTickFormat)
+        let xAxis = d3.axisBottom(xScale)
             .tickSize(-innerHeight)
             .tickPadding(20);
-
 
         const yAxis = d3.axisLeft(yScale)
             .tickSize(-innerWidth)
             .tickPadding(10);
+
+
+
+        const g = svg.append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`)
+
+
 
         const xAxisG = g.append('g')
             .call(xAxis)
             .style('font-size', '0.3em')
             .attr('transform', `translate(0, ${innerHeight})`);
 
-        xAxisG.select('.domain').remove();
+        // xAxisG.select('.domain').remove();
 
         xAxisG.append('text')
             .attr('fill', 'black')
@@ -59,11 +77,13 @@ function scatter_plot(x_attribute, y_attribute) {
             .attr('x', innerWidth / 2)
             .text(xAxisLabel);
 
+
+
         const yAxisG = g.append('g')
             .call(yAxis)
             .style('font-size', '0.3em');
 
-        yAxisG.selectAll('.domain').remove();
+        // yAxisG.selectAll('.domain').remove();
 
         yAxisG.append('text')
             .attr('fill', 'black')
@@ -86,11 +106,22 @@ function scatter_plot(x_attribute, y_attribute) {
             .attr('transform', "translate(" + innerHeight / 2 + "," + " 0)")
             .style('font-size', '2em')
             .text(title);
+
     }
-    d3.csv('https://vizhub.com/curran/datasets/auto-mpg.csv', (data) => {
+
+
+    d3.csv(csv_file, (data) => {
         data.forEach(d => {
-            d.x_attr = +d[x_attribute]
-            d.y_attr = +d[y_attribute]
+            if (!categorical.includes(x_attribute)) {
+                d.x_attr = +d[x_attribute]
+            } else {
+                d.x_attr = d[x_attribute]
+            }
+            if (!categorical.includes(y_attribute)) {
+                d.y_attr = +d[y_attribute]
+            } else {
+                d.y_attr = d[y_attribute]
+            }
         });
         render(data)
     });

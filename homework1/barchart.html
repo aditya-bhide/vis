@@ -11,13 +11,19 @@
 <body>
     <h3>Select Attribute</h3>
     <select id="barchart-set-attribute">
-        <option value="origin">origin</option>
+        <script>
+            let list_categories = ""
+            categorical.forEach(x => {
+                list_categories += '<option value="' + x + '">' + x + '</option>'
+            });
+            document.getElementById("barchart-set-attribute").innerHTML = list_categories;
+        </script>
     </select>
     <br>
     <svg id="barchart-svg" width="900" height="500"></svg>
     <div id="barchartgraph"></div>
     <script>
-        callbarchart();
+        callbarchart()
     </script>
 </body>
 

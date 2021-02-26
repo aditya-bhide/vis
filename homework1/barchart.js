@@ -23,8 +23,12 @@ function bar_chart(attribute) {
             .range([innerHeight, 0])
             .nice();
 
+
+
         const g = svg.append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+
 
         const xAxis = g.append('g')
             .call(d3.axisBottom(xScale))
@@ -38,6 +42,8 @@ function bar_chart(attribute) {
         const yAxis = g.append('g')
             .call(d3.axisLeft(yScale).tickFormat(yAxisTickFormat))
             .style('font-size', '0.35em');
+
+
 
         xAxis.append('text')
             .attr('fill', 'black')
@@ -53,6 +59,8 @@ function bar_chart(attribute) {
             .style('text-anchor', 'middle')
             .attr('transform', 'rotate(-90)');
 
+
+
         g.selectAll('rect').data(data)
             .enter().append('rect')
             .attr('x', d => xScale(xValue(d)))
@@ -62,6 +70,7 @@ function bar_chart(attribute) {
             .on("mouseover", mouseover)
             .on("mousemove", mousemove)
             .on("mouseout", mouseout);
+
 
 
         var div = d3.select("body").append("div")
@@ -86,7 +95,7 @@ function bar_chart(attribute) {
         }
     }
 
-    d3.csv('https://vizhub.com/curran/datasets/auto-mpg.csv', (data) => {
+    d3.csv(csv_file, (data) => {
         // define count object that holds count for each city
         let countObj = {};
 
@@ -99,8 +108,8 @@ function bar_chart(attribute) {
                 countObj[attr] = countObj[attr] + 1;
             }
         });
-        console.log(countObj)
-            // now store the count in each data member
+
+        // now store the count in each data member
         data.forEach(function(d) {
             let attr = d[attribute];
             d.count = countObj[attr];

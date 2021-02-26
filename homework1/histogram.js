@@ -109,7 +109,7 @@ function histogram(attribute, value) {
             .text(xAxisLabel);
     }
 
-    d3.csv('https://vizhub.com/curran/datasets/auto-mpg.csv', (data) => {
+    d3.csv(csv_file, (data) => {
 
         data.forEach(function(d) {
             d.attribute = +d[attribute];
