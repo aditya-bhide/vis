@@ -16,7 +16,7 @@ function histogram(attribute) {
 
     const render = data => {
         // X axis: scale and draw:
-        const xValue = d => d[attribute] * 100
+        const xValue = d => d[attribute]
         var current_bin = 20
         console.log(d3.min(data, xValue))
         var xScale = d3.scaleLinear()
@@ -45,7 +45,6 @@ function histogram(attribute) {
 
         // A function that builds the graph for a specific value of bin
         function update(nBin = current_bin) {
-            console.log(nBin)
             var [min, max] = d3.extent(data, xValue);
             var thresholds = d3.range(min, max, (max - min) / nBin);
 
@@ -65,7 +64,7 @@ function histogram(attribute) {
             })]); // d3.hist has to be called before the Y axis obviously
 
             yAxis.transition()
-                .duration(1000)
+                .duration(0)
                 .call(d3.axisLeft(yScale))
                 .style('font-size', '0.35em');
 
@@ -82,7 +81,7 @@ function histogram(attribute) {
                 .on("mousemove", mousemove)
                 .on("mouseout", mouseout)
                 .transition() // and apply changes to all of them
-                .duration(1000)
+                .duration(50)
                 .attr("x", 1)
                 .attr("transform", function(d) {
                     return "translate(" + xScale(d.x0) + "," + yScale(d.length) + ")";
@@ -134,16 +133,14 @@ function histogram(attribute) {
         var drag_start = null
 
         function dragstarted() {
-            drag_start = event.x
+            drag_start = d3.event.x
         }
 
         function dragging() {
-            movement = drag_start - event.x
-            change_bin = Math.floor(movement / 70)
+            movement = drag_start - d3.event.x
+            change_bin = Math.floor(movement / 100)
             if ((current_bin + change_bin) > 1 && (current_bin + change_bin) < 100) {
                 current_bin += change_bin
-                console.log(current_bin)
-                console.log(change_bin)
                 update(current_bin)
             }
         }
@@ -168,15 +165,16 @@ function histogram(attribute) {
     }
 
     // get the data
-    d3.csv("https://vizhub.com/curran/datasets/auto-mpg.csv", function(data) {
+    d3.csv(csv_file, function(data) {
         data.forEach(function(d) {
             d.attribute = +d[attribute];
         });
+        console.log(data)
         render(data)
 
     });
 }
 
-function callhistogram(numerical_value) {
-    histogram(numerical_value);
+function callhistogram(attribute) {
+    histogram(attribute);
 }

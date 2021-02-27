@@ -11,10 +11,6 @@
 <body>
     <h3> Attribute </h3>
     <select id="scatterplot-set-attribute">
-        <option value="weight">weight</option>
-        <option value="horsepower">horsepower</option>
-        <option value="displacement">displacement</option>
-        <option value="origin">origin</option>
     </select>
     <br>
     <br>
@@ -24,13 +20,16 @@
             list_attributes_scatterplot += '<option value="' + x + '">' + x + '</option>'
         });
         document.getElementById("scatterplot-set-attribute").innerHTML = list_attributes_scatterplot;
+        let scatter_default = document.getElementById("scatterplot-set-attribute").value
+        $("#radio-xAxis-value").html(scatter_default);
+        $("#radio-yAxis-value").html(scatter_default);
     </script>
     <div class="options">
         <input type="radio" id="radio-xAxis" name="axis" value="xAxis" checked="checked">
-        <label for="male">X axis value : </label><span id='radio-xAxis-value'>weight</span>
+        <label for="male">X axis value : </label><span id='radio-xAxis-value'></span>
         <br><br>
         <input type="radio" id="radio-yAxis" name="axis" value="yAxis">
-        <label for="male">Y axis value : </label><span id='radio-yAxis-value'>weight</span>
+        <label for="male">Y axis value : </label><span id='radio-yAxis-value'></span>
     </div>
     <div id="scatterplotgraph">
 

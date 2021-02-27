@@ -131,10 +131,12 @@ function callscatterplot() {
     li.setAttribute('width', svg_width)
     li.setAttribute('height', svg_height)
     ul.appendChild(li)
-    scatter_plot('weight', 'weight')
 
-    let x_value = "weight"
-    let y_value = "weight"
+    let temp = document.getElementById('scatterplot-set-attribute').value
+    scatter_plot(temp, temp)
+
+    let x_value = temp
+    let y_value = temp
 
     $("#scatterplot-set-attribute").change(function() {
         let selected = document.getElementById("scatterplot-set-attribute");
