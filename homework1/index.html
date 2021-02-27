@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="#">
     <title>Homework1</title>
     <link rel="stylesheet" href="main.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -19,22 +20,18 @@
 <body>
     <h1>Some Dataset Visualisation</h1>
     <div class="topnav">
-        <a id="barchart-nav">Bar Chart</a>
-        <a id="histogram-nav">Histogram</a>
+        <a id="barchart-and-histogram-nav">Bar Chart & Histogram</a>
         <a id="scatterplot-nav">Scatter Plot</a>
     </div>
-    <div id="barchart"></div>
-    <div id="histogram"></div>
+    <div id="barchart-and-histogram">
+    </div>
     <div id="scatterplot"></div>
     <script>
-        //initialiseall()
-        $("#barchart").show();
-        $("#histogram").hide();
+        $("#barchart-and-histogram").show();
         $("#scatterplot").hide();
         $(function() {
+            $("#barchart-and-histogram").load("BarchartAndHistogram.html");
             $("#scatterplot").load("scatterplot.html");
-            $("#histogram").load("histogram.html");
-            $("#barchart").load("barchart.html");
         });
     </script>
 </body>

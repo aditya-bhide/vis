@@ -59,8 +59,6 @@ function bar_chart(attribute) {
             .style('text-anchor', 'middle')
             .attr('transform', 'rotate(-90)');
 
-
-
         g.selectAll('rect').data(data)
             .enter().append('rect')
             .attr('x', d => xScale(xValue(d)))
@@ -70,7 +68,6 @@ function bar_chart(attribute) {
             .on("mouseover", mouseover)
             .on("mousemove", mousemove)
             .on("mouseout", mouseout);
-
 
 
         var div = d3.select("body").append("div")
@@ -118,27 +115,12 @@ function bar_chart(attribute) {
     });
 }
 
-function callbarchart() {
+function callbarchart(categorical_value) {
     let ul = document.getElementById("barchartgraph");
     let li = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     li.setAttribute("id", "barchart-svg")
     li.setAttribute('width', svg_width)
     li.setAttribute('height', svg_height)
     ul.appendChild(li)
-    bar_chart('origin');
-
-    let attribute_value = 'origin'
-
-    $("#histogram-set-attribute").change(function() {
-        attribute_value = document.getElementById("barchart-set-attribute").value;
-        let svg = d3.select("#barchart-svg");
-        svg.selectAll("*").remove();
-        let temp = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        li.setAttribute("id", "barchart-svg")
-        temp.setAttribute('width', svg_width)
-        temp.setAttribute('height', svg_height)
-        ul.appendChild(li)
-
-        bar_chart(attribute_value)
-    });
+    bar_chart(categorical_value);
 }

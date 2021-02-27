@@ -57,11 +57,8 @@ function scatter_plot(x_attribute, y_attribute) {
             .tickSize(-innerWidth)
             .tickPadding(10);
 
-
-
         const g = svg.append('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)
-
 
 
         const xAxisG = g.append('g')
@@ -154,7 +151,7 @@ function callscatterplot() {
         $("#radio-xAxis-value").html(x_value);
         $("#radio-yAxis-value").html(y_value);
 
-        let svg = d3.select("#scatterplot-svg");
+        let svg = d3.select("#scatterplotgraph");
         svg.selectAll("*").remove();
         let temp = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         li.setAttribute("id", "scatterplot-svg")

@@ -18,6 +18,13 @@
     </select>
     <br>
     <br>
+    <script>
+        let list_attributes_scatterplot = ""
+        all_attributes.forEach(x => {
+            list_attributes_scatterplot += '<option value="' + x + '">' + x + '</option>'
+        });
+        document.getElementById("scatterplot-set-attribute").innerHTML = list_attributes_scatterplot;
+    </script>
     <div class="options">
         <input type="radio" id="radio-xAxis" name="axis" value="xAxis" checked="checked">
         <label for="male">X axis value : </label><span id='radio-xAxis-value'>weight</span>
