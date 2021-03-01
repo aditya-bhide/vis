@@ -1,37 +1,20 @@
 body {
-    margin: 0px;
     overflow: hidden;
+    background-image: url("fifa20_visualisation_background.jpg");
+    background-size: cover;
 }
 
-rect {
-    fill: steelblue;
-}
-
-circle {
-    fill: red;
-    opacity: 0.5;
+h3 {
+    margin: 0px 0px 0px 0px;
 }
 
 text {
-    font-size: 4.5em;
     font-family: sans-serif;
 }
 
 .tick text {
     font-size: 2.7em;
-    fill: #635f5d
-}
-
-.tooltip {
-    position: absolute;
-    text-align: center;
-    padding: 0.5rem;
-    margin-top: -20px;
-    border: 1px solid #313639;
-    border-radius: 8px;
-    font: 10px sans-serif;
-    background: #ddd;
-    pointer-events: none;
+    fill: #635f5d;
 }
 
 .topnav {
@@ -54,6 +37,58 @@ text {
 }
 
 .topnav a.active {
-    background-color: #4CAF50;
+    background-color: #4caf50;
     color: white;
+}
+
+.main-body {
+    padding-left: 20%;
+    padding-right: 20%;
+    justify-content: center;
+    background-size: auto;
+}
+
+#heading {
+    text-align: center;
+    color: red;
+}
+
+.scatterplot-functionality {
+    float: left;
+    /* height: 50px; */
+}
+
+.attribute-heading {
+    color: red;
+    padding-top: 20px;
+}
+
+.attribute-select {
+    float: left;
+    font-size: 1.3em;
+    padding: 10px;
+    margin-bottom: 40px;
+}
+
+.options {
+    color: red;
+    font-size: 1.5em;
+    float: left;
+}
+
+.radio-axis {
+    margin-bottom: 15px;
+}
+
+svg {
+    background-color: #a6f3ff;
+}
+
+rect {
+    fill: steelblue;
+}
+
+circle {
+    fill: red;
+    opacity: 0.5;
 }

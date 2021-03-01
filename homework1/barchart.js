@@ -3,13 +3,13 @@ function bar_chart(attribute) {
     const height = +svg.attr('height');
     const width = +svg.attr('width');
     const render = data => {
-        const xValue = d => d[attribute];
+        const xValue = d => d.key;
         const xAxisLabel = attribute
 
-        const yValue = d => d.count;
+        const yValue = d => d.value;
         const yAxisLabel = 'Count'
 
-        const margin = { top: 20, bottom: 60, right: 20, left: 100 };
+        const margin = { top: 60, bottom: 60, right: 20, left: 100 };
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
 
@@ -49,7 +49,8 @@ function bar_chart(attribute) {
             .attr('fill', 'black')
             .attr('y', 50)
             .attr('x', innerWidth / 2)
-            .text(xAxisLabel);
+            .text(xAxisLabel)
+            .attr("font-size", "5em");
 
         yAxis.append('text')
             .attr('fill', 'black')
@@ -57,46 +58,58 @@ function bar_chart(attribute) {
             .attr('x', -innerHeight / 2)
             .text(yAxisLabel)
             .style('text-anchor', 'middle')
+            .attr("font-size", "5em")
             .attr('transform', 'rotate(-90)');
 
-        g.selectAll('rect').data(data)
-            .enter().append('rect')
+        var bar_rect = g.selectAll('.rect-bar')
+            .data(data)
+            .enter()
+            .append("g")
+            .attr("class", "rect-bar-cover");
+
+        bar_rect.append('rect')
+            .attr('class', 'rect-bar')
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove)
+            .on("mouseout", mouseout)
+            .attr("y", innerHeight)
+            .transition().duration(1000)
             .attr('x', d => xScale(xValue(d)))
             .attr('y', d => yScale(yValue(d)))
             .attr('width', xScale.bandwidth())
-            .attr('height', d => innerHeight - yScale(yValue(d)))
-            .on("mouseover", mouseover)
-            .on("mousemove", mousemove)
-            .on("mouseout", mouseout);
+            .attr('height', d => innerHeight - yScale(yValue(d)));
 
-
-        var div = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("display", "none");
+        bar_rect.append('text')
+            .attr("class", "rect-hover-text")
+            .attr('x', function(d) { return xScale(xValue(d)) + xScale.bandwidth() / 2 })
+            .attr('y', function(d) { return yScale(yValue(d)) - 10 })
+            .attr("text-anchor", "middle")
+            .text(d => yValue(d))
+            .style("fill", "red")
+            .style("font-size", "1.5em")
+            .style("display", "none")
 
         function mouseover(d) {
-            d3.select(this).style('fill', 'red');
-            div.style("display", "inline");
-            div.text(`Count : ${yValue(d) + 1}`)
+            d3.select(this).style('fill', 'red')
+            d3.select(this.parentNode).selectAll('.rect-hover-text').style('display', "block")
+
         }
 
-        function mousemove() {
+        function mousemove(d) {
             d3.select(this).style('fill', 'red');
-            div.style("left", (d3.event.pageX - 34) + "px")
-                .style("top", (d3.event.pageY - 12) + "px");
+            d3.select(this.parentNode).selectAll('.rect-hover-text').style('display', "block")
+
         }
 
         function mouseout() {
             d3.select(this).style('fill', 'steelblue');
-            div.style("display", "none");
+            d3.select(this.parentNode).selectAll('.rect-hover-text').style('display', "none")
         }
     }
 
     d3.csv(csv_file, (data) => {
-        // define count object that holds count for each city
         let countObj = {};
 
-        // count how much each city occurs in list and store in countObj
         data.forEach(function(d) {
             let attr = d[attribute];
             if (countObj[attr] === undefined) {
@@ -105,13 +118,9 @@ function bar_chart(attribute) {
                 countObj[attr] = countObj[attr] + 1;
             }
         });
+        maping_set =
 
-        // now store the count in each data member
-        data.forEach(function(d) {
-            let attr = d[attribute];
-            d.count = countObj[attr];
-        });
-        render(data)
+            render(d3.entries(countObj))
     });
 }
 

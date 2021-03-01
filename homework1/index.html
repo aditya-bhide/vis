@@ -18,22 +18,26 @@
 </head>
 
 <body>
-    <h1>Some Dataset Visualisation</h1>
+    <div id="heading">
+        <h1>FIFA2020 Players Data Visualisation</h1>
+    </div>
     <div class="topnav">
         <a id="barchart-and-histogram-nav">Bar Chart & Histogram</a>
         <a id="scatterplot-nav">Scatter Plot</a>
     </div>
-    <div id="barchart-and-histogram">
+    <div class="main-body">
+        <div id="barchart-and-histogram">
+        </div>
+        <div id="scatterplot"></div>
+        <script>
+            $("#barchart-and-histogram").show();
+            $("#scatterplot").hide();
+            $(function() {
+                $("#barchart-and-histogram").load("BarchartAndHistogram.html");
+                $("#scatterplot").load("scatterplot.html");
+            });
+        </script>
     </div>
-    <div id="scatterplot"></div>
-    <script>
-        $("#barchart-and-histogram").show();
-        $("#scatterplot").hide();
-        $(function() {
-            $("#barchart-and-histogram").load("BarchartAndHistogram.html");
-            $("#scatterplot").load("scatterplot.html");
-        });
-    </script>
 </body>
 
 </html>

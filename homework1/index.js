@@ -1,15 +1,11 @@
-var svg_width = 900
-var svg_height = 500
-var categorical = ["sex"]
+var svg_width = 1100
+var svg_height = 520
+var categorical = ["nationality", "preferred_foot", "team_position", "skill_moves", "international_reputation"]
 var data = null
-var numeric = ["absences", "G1"]
+var numeric = ["age", "height_cm", "weight_kg", "overall", "value_eur", "wage_eur", "pace", "shooting", "dribbling", "defending", "physic"]
 var all_attributes = categorical.concat(numeric)
-var csv_file = "student-por.csv"
+var csv_file = "temp.csv"
 
-// d3.csv(csv_file, (mydata) => {
-//     data = 
-// });
-// var csv_file = "https://vizhub.com/curran/datasets/auto-mpg.csv"
 $(document).ready(function() {
     $("#barchart-and-histogram-nav").click(function() {
         $("#barchart-and-histogram").show();

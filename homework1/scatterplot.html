@@ -9,27 +9,34 @@
 </head>
 
 <body>
-    <h3> Attribute </h3>
-    <select id="scatterplot-set-attribute">
-    </select>
-    <br>
-    <br>
-    <script>
-        let list_attributes_scatterplot = ""
-        all_attributes.forEach(x => {
-            list_attributes_scatterplot += '<option value="' + x + '">' + x + '</option>'
-        });
-        document.getElementById("scatterplot-set-attribute").innerHTML = list_attributes_scatterplot;
-        let scatter_default = document.getElementById("scatterplot-set-attribute").value
-        $("#radio-xAxis-value").html(scatter_default);
-        $("#radio-yAxis-value").html(scatter_default);
-    </script>
-    <div class="options">
-        <input type="radio" id="radio-xAxis" name="axis" value="xAxis" checked="checked">
-        <label for="male">X axis value : </label><span id='radio-xAxis-value'></span>
-        <br><br>
-        <input type="radio" id="radio-yAxis" name="axis" value="yAxis">
-        <label for="male">Y axis value : </label><span id='radio-yAxis-value'></span>
+    <div class="attribute-heading">
+        <h2>Select Attribute</h2>
+    </div>
+    <div class="scatterplot-functionality">
+        <select class="attribute-select" id="scatterplot-set-attribute">
+        </select>
+
+        <script>
+            let list_attributes_scatterplot = ""
+            all_attributes.forEach(x => {
+                list_attributes_scatterplot += '<option value="' + x + '">' + x + '</option>'
+            });
+            document.getElementById("scatterplot-set-attribute").innerHTML = list_attributes_scatterplot;
+            let scatter_default = document.getElementById("scatterplot-set-attribute").value
+            $("#radio-xAxis-value").html(scatter_default);
+            $("#radio-yAxis-value").html(scatter_default);
+        </script>
+
+        <div class="options">
+            <div class="radio-axis">
+                <input type="radio" id="radio-xAxis" name="axis" value="xAxis" checked="checked">
+                <label for="male">X axis value : </label><span id='radio-xAxis-value'></span>
+            </div>
+            <div class="radio-axis">
+                <input type="radio" class="radio-axis" id="radio-yAxis" name="axis" value="yAxis">
+                <label for="male">Y axis value : </label><span id='radio-yAxis-value'></span>
+            </div>
+        </div>
     </div>
     <div id="scatterplotgraph">
 

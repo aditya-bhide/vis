@@ -74,8 +74,6 @@ function scatter_plot(x_attribute, y_attribute) {
             .attr('x', innerWidth / 2)
             .text(xAxisLabel);
 
-
-
         const yAxisG = g.append('g')
             .call(yAxis)
             .style('font-size', '0.3em');
@@ -88,6 +86,7 @@ function scatter_plot(x_attribute, y_attribute) {
             .attr('x', -innerHeight / 2)
             .text(yAxisLabel)
             .style('text-anchor', 'middle')
+            .attr("font-size", "5em")
             .attr('transform', 'rotate(-90)');
 
 
@@ -105,7 +104,6 @@ function scatter_plot(x_attribute, y_attribute) {
             .text(title);
 
     }
-
 
     d3.csv(csv_file, (data) => {
         data.forEach(d => {
