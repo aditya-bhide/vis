@@ -25,6 +25,8 @@
             });
             document.getElementById("scatterplot-set-attribute").innerHTML = list_attributes_scatterplot;
             let scatter_default = document.getElementById("scatterplot-set-attribute").value
+            scatter_default = scatter_default.charAt(0).toUpperCase() + scatter_default.slice(1)
+            scatter_default = scatter_default.replace("_", " ")
             $("#radio-xAxis-value").html(scatter_default);
             $("#radio-yAxis-value").html(scatter_default);
         </script>

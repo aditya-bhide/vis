@@ -73,6 +73,10 @@ text {
     float: left;
 }
 
+input[type=radio] {
+    transform: scale(1.5);
+}
+
 .options {
     color: red;
     font-size: 1.5em;

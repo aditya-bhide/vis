@@ -165,8 +165,12 @@ function callscatterplot() {
                 }
             }
         }
-        $("#radio-xAxis-value").html(x_value);
-        $("#radio-yAxis-value").html(y_value);
+        let x_value_display = x_value.charAt(0).toUpperCase() + x_value.slice(1)
+        x_value_display = x_value_display.replace("_", " ")
+        let y_value_display = y_value.charAt(0).toUpperCase() + y_value.slice(1)
+        y_value_display = y_value_display.replace("_", " ")
+        $("#radio-xAxis-value").html(x_value_display);
+        $("#radio-yAxis-value").html(y_value_display);
 
         let svg = d3.select("#scatterplotgraph");
         svg.selectAll("*").remove();
