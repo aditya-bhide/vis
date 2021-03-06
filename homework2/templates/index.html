@@ -1,4 +1,53 @@
-{% extends 'base.html' %} {% block head %}
-<title>Task Master</title>
-<h1>Why was it not working???</h1>
-{% endblock %} {% block body %} {% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <link rel="shortcut icon" href="#">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="static/js/screeplot.js"></script>
+    <script src="static/js/biplot.js"></script>
+    <script src="static/js/scatterplot_matrix.js"></script>
+    <script src="static/js/index.js"></script>
+    <title>Homework2</title>
+
+</head>
+
+<body>
+    <div class="container">
+    <div class="scree-plot">
+        <p> Intrinsic Dimensionality Index : <span id='intrinsic-dimentionality-index'>None</span></p>
+        <input type="button" id="select-intrinsic-dimentionality-index" value="Select">
+        <div id="scree-plot-graph"></div>
+
+    </div>
+    <div id="imp-features-table-div">
+    
+    </div>
+
+    </div>
+    <div class="biplot" style="display=none">
+        <p> Show biplot </p>
+        <input type="button" id="select-show-biplot" value="Select">
+        <div id="biplot-graph"></div>
+    </div>
+  
+
+    <script>
+        //var feature_table_values = { "A1": "A1", "B1": "B1" }
+        //show_table(feature_table_values)
+        var eigen = {{ data.chart_data|tojson|safe }}
+        eigen = JSON.parse(eigen)
+        eigen_values = d3.entries(eigen)
+        scree_plot(eigen_values)
+    </script>
+    </div>
+
+</body>
+
+</html>

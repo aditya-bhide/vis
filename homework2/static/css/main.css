@@ -1,38 +1,72 @@
-body,
-html {
+body {
     margin: 0;
     font-family: sans-serif;
+    overflow: auto;
 }
 
-.content {
-    margin: 0 auto;
-    width: 400px;
+svg {
+    font: 10px sans-serif;
+    padding: 12px;
 }
 
-table,
-td,
-th {
-    border: 1px solid #aaa;
+.axis,
+.frame {
+    shape-rendering: crispEdges;
 }
 
-table {
-    border-collapse: collapse;
-    width: 100%;
+.axis line {
+    stroke: #e8e8e8;
 }
 
-th {
-    height: 30px;
+.axis path {
+    display: none;
 }
 
-td {
+.axis text {
+    fill: #999;
+}
+
+.cell text {
+    font-weight: bold;
+    text-transform: capitalize;
+    font-size: 15px;
+    fill: #222;
+}
+
+.frame {
+    fill: none;
+    stroke: #aaa;
+}
+
+.diagonal {
+    stroke: none;
+    fill: #fff;
+}
+
+circle {
+    fill-opacity: 1;
+    color: steelblue;
+}
+
+circle.hidden {
+    fill: #ccc !important;
+}
+
+.extent {
+    fill: #000;
+    stroke: #fff;
+}
+
+div.tooltip {
+    position: absolute;
     text-align: center;
-    padding: 5px;
-}
-
-.form {
-    margin-top: 20px;
-}
-
-#content {
-    width: 70%;
+    padding: .2rem;
+    background: #313639;
+    color: #f9f9f9;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+    font-size: .7rem;
+    white-space: pre-wrap;
+    font-size: 1.5em;
 }
