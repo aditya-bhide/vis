@@ -1,16 +1,26 @@
-let features_table_data = [
-    { name: "Monte Falco", height: 1658, place: "Parco Foreste Casentinesi" },
-    { name: "Monte Falterona", height: 1654, place: "Parco Foreste Casentinesi" },
-    { name: "Poggio Scali", height: 1520, place: "Parco Foreste Casentinesi" },
-    { name: "Pratomagno", height: 1592, place: "Parco Foreste Casentinesi" },
-    { name: "Monte Amiata", height: 1738, place: "Siena" }
-];
-let feature_table = document.getElementById("mp-feature-table");
-let header = features_table.createTHeadd();
-var row = header.insertRow(0);
-var cell = row.insertCell(0);
-cell.innerHTML = "<b>This is a table header</b>";
+function show_table(feature_data) {
+    node = document.getElementById("imp-features-table-div")
 
-function create_table() {
+    while (node.hasChildNodes()) {
+        node.removeChild(node.lastChild);
+    }
+    console.log("I fucking reched here")
 
+    feature_table_values = feature_data
+    var table = document.createElement("TABLE");
+    table.setAttribute("id", "imp-feature-table");
+    document.getElementById("imp-features-table-div").appendChild(table)
+    var header = table.createTHead();
+    var row = header.insertRow(0);
+    var cell1 = row.insertCell(0);
+    cell1.innerHTML = "<b>Features</b>";
+    var cell2 = row.insertCell(1);
+    cell2.innerHTML = "<b>Sum of squared loadings</b>"
+    for (var key in feature_table_values) {
+        var newRow = table.insertRow(table.length);
+        var cell1 = newRow.insertCell();
+        cell1.innerHTML = key;
+        var cell2 = newRow.insertCell();
+        cell2.innerHTML = feature_table_values[key];
+    }
 }

@@ -1,15 +1,21 @@
 function scree_plot(data) {
     // set the dimensions and margins of the graph
-    let svg_width = 1200
-    let svg_height = 700
+    let svg_width = 900
+    let svg_height = 550
     let circleRadius = 5
-    var margin = { top: 40, right: 30, bottom: 70, left: 100 },
+    var margin = { top: 40, right: 30, bottom: 80, left: 100 },
         width = svg_width - margin.left - margin.right,
         height = svg_height - margin.top - margin.bottom;
+    var feature_count = 0
+
+    data = data.chart_data
+    data = d3.entries(data)
+
     data.forEach(d => {
         d.key = +d.key
         d.value.cumulative_variance = +d.value.cumulative_variance
         d.value.variance_percentage = +d.value.variance_percentage
+        feature_count += 1
     });
     xValue = d => d.key
     yValue = d => d.value.cumulative_variance
@@ -17,6 +23,9 @@ function scree_plot(data) {
 
     xAxisLabel = 'Component Number'
     yAxisLabel = 'Cumulative percentage'
+
+    d3.select("#scree-plot-graph").selectAll("*").remove()
+
     var svg = d3.select("#scree-plot-graph")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -25,16 +34,16 @@ function scree_plot(data) {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-    console.log(d3.extent(data, xValue))
-        // append the svg object to the body of the page
+    // append the svg object to the body of the page
     var xScale = d3.scaleLinear()
         .domain([0, d3.max(data, xValue) * 1.05])
         .range([0, width])
         .nice();
 
-    tickArr = xScale.ticks()
-    tickDistance = xScale(tickArr[tickArr.length - 1]) - xScale(tickArr[tickArr.length - 2]);
-    console.log(tickDistance)
+    // tickArr = xScale.ticks()
+    // tickDistance = xScale(tickArr[tickArr.length - 1]) - xScale(tickArr[tickArr.length - 2]);
+
+    tickDistance = height / feature_count
 
     // var ticksCount = xScale.ticks()[0]
     // xScale.ticks(ticksCount + 1)
@@ -72,16 +81,18 @@ function scree_plot(data) {
         .attr("font-size", "3em")
         .attr('transform', 'rotate(-90)');
 
+    let line = d3.line()
+        .x(d => xScale(xValue(d)))
+        .y(d => yScale(yValue(d)))
+        .curve(d3.curveMonotoneX);
+
     // Add the line
     svg.append("path")
         .datum(data)
         .attr("fill", "none")
         .attr("stroke", "black")
         .attr("stroke-width", 1.5)
-        .attr("d", d3.line()
-            .x(d => xScale(xValue(d)))
-            .y(d => yScale(yValue(d)))
-        );
+        .attr("d", line);
 
 
     var combine = svg.selectAll('.rect-bar')
@@ -101,7 +112,6 @@ function scree_plot(data) {
         .attr('width', tickDistance)
         .attr('height', d => height - yScale(barValue(d)))
         .style("fill", "steelblue");
-
 
     combine.append('circle')
         .attr("class", "circle-point")
@@ -143,31 +153,5 @@ function scree_plot(data) {
     function pca_click(d) {
         $("#intrinsic-dimentionality-index").html(xValue(d))
 
-    }
-}
-
-function show_table(feature_data) {
-    node = document.getElementById("imp-features-table-div")
-    while (node.hasChildNodes()) {
-        node.removeChild(node.lastChild);
-    }
-
-    feature_table_values = feature_data
-    console.log(feature_table_values)
-    var table = document.createElement("TABLE");
-    table.setAttribute("id", "imp-feature-table");
-    document.getElementById("imp-features-table-div").appendChild(table)
-    var header = table.createTHead();
-    var row = header.insertRow(0);
-    var cell1 = row.insertCell(0);
-    cell1.innerHTML = "<b>Features</b>";
-    var cell2 = row.insertCell(1);
-    cell2.innerHTML = "<b>Sum of squared loadings</b>"
-    for (var key in feature_table_values) {
-        var newRow = table.insertRow(table.length);
-        var cell1 = newRow.insertCell();
-        cell1.innerHTML = key;
-        var cell2 = newRow.insertCell();
-        cell2.innerHTML = feature_table_values[key];
     }
 }

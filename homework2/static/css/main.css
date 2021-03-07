@@ -4,9 +4,21 @@ body {
     overflow: auto;
 }
 
+#heading {
+    text-align: center;
+    color: red;
+}
+
 svg {
     font: 10px sans-serif;
     padding: 12px;
+}
+
+table,
+th,
+td,
+tr {
+    border: 1px solid black;
 }
 
 .axis,
@@ -16,6 +28,7 @@ svg {
 
 .axis line {
     stroke: #e8e8e8;
+    opacity: 0.5;
 }
 
 .axis path {
@@ -23,7 +36,7 @@ svg {
 }
 
 .axis text {
-    fill: #999;
+    fill: black;
 }
 
 .cell text {
@@ -41,11 +54,11 @@ svg {
 .diagonal {
     stroke: none;
     fill: #fff;
+    fill-opacity: 0.9;
 }
 
 circle {
-    fill-opacity: 1;
-    color: steelblue;
+    fill-opacity: .7;
 }
 
 circle.hidden {
@@ -54,6 +67,7 @@ circle.hidden {
 
 .extent {
     fill: #000;
+    fill-opacity: .125;
     stroke: #fff;
 }
 

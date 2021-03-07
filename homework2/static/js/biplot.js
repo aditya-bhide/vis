@@ -1,22 +1,26 @@
-function biplot(data) {
-    // set the dimensions and margins of the graph
-    let svg_width = 700
-    let svg_height = 500
+function biplot(data_all) {
+
+    let svg_width = 900
+    let svg_height = 550
     let circleRadius = 5
-    var margin = { top: 40, right: 30, bottom: 70, left: 100 },
+    let pointRadius = 3
+    var margin = { top: 40, right: 30, bottom: 80, left: 100 },
         width = svg_width - margin.left - margin.right,
         height = svg_height - margin.top - margin.bottom;
-    data = d3.entries(data.chart_data)
-    data.forEach(d => {
-        console.log(d.value.pc1)
-    });
-
+    data = d3.entries(data_all.feature_contri)
+    scatter_data = d3.entries(data_all.plot_pca)
 
     xValue = d => d.value.pc1
     yValue = d => d.value.pc2
     nameValue = d => d.value.name
+
+    xSValue = d => d.value.pc1
+    ySValue = d => d.value.pc2
+
+
     xAxisLabel = 'PC1'
     yAxisLabel = 'PC2'
+    d3.select("#biplot-graph").selectAll("*").remove()
     var svg = d3.select("#biplot-graph")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -25,18 +29,16 @@ function biplot(data) {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-    console.log(data)
-        // append the svg object to the body of the page
 
-    xdomain = d3.extent(data, xValue)
-    if (xdomain[0] > 0) {
-        xdomain[0] = -0.1
-    }
-    xdomain[1] += 0.1
+    // xdomain = d3.extent(data, xValue)
+    // if (xdomain[0] > 0) {
+    //     xdomain[0] = -0.1
+    // }
+    // xdomain[1] += 0.1
 
     d3.extent(data, xValue)
     var xScale = d3.scaleLinear()
-        .domain(xdomain)
+        .domain(d3.extent(scatter_data, xSValue))
         .range([0, width]);
 
     var xAxis = svg.append("g")
@@ -52,8 +54,9 @@ function biplot(data) {
 
     // Add Y axis
     var yScale = d3.scaleLinear()
-        .domain([d3.min(data, yValue) - 0.1, d3.max(data, yValue) + 0.1])
+        .domain([d3.min(scatter_data, ySValue) - 0.1, d3.max(scatter_data, ySValue) + 0.1])
         .range([height, 0]);
+
     var yAxis = svg.append("g")
         .call(d3.axisLeft(yScale));
 
@@ -110,7 +113,12 @@ function biplot(data) {
         .attr('x2', d => xScale(xValue(d)))
         .style("stroke", randomColor);
 
-
+    svg.append("g").selectAll('circle').data(scatter_data)
+        .enter().append('circle')
+        .attr('cy', d => yScale(ySValue(d)))
+        .attr('cx', d => xScale(xSValue(d)))
+        .attr('r', pointRadius)
+        .style("fill", "blue");
 
     svg.append("g").selectAll('circle').data(data)
         .enter().append('circle')
@@ -119,7 +127,7 @@ function biplot(data) {
         .attr('cy', d => yScale(yValue(d)))
         .attr('cx', d => xScale(xValue(d)))
         .attr('r', circleRadius)
-        .style("fill", "steelblue");
+        .style("fill", "yellow");
 
     let div = d3.select("body").append("div")
         .attr("class", "tooltip")
@@ -145,27 +153,10 @@ function biplot(data) {
         d3.select(this).transition()
             .duration('200')
             .attr("r", circleRadius)
-            .style('fill', 'steelblue');
+            .style('fill', 'yellow');
 
         div.transition()
             .duration('200')
             .style("opacity", 0);
     }
 }
-
-
-$(document).ready(function() {
-    $("#select-show-biplot").click(function() {
-        $.ajax({
-            type: 'POST',
-            url: "http://127.0.0.1:5000/biplot",
-            data: null,
-            success: function(response) {
-                biplot(response)
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
-    });
-});

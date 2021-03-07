@@ -1,8 +1,10 @@
 $(document).ready(function() {
-    let di
+    $(".scree-plot").hide()
+    $(".biplot").hide()
+
     $("#select-intrinsic-dimentionality-index").click(function() {
+        let di
         di = $("#intrinsic-dimentionality-index").text()
-        console.log(JSON.stringify(di))
         $.ajax({
             type: 'POST',
             url: "http://127.0.0.1:5000/id_index",
@@ -16,4 +18,38 @@ $(document).ready(function() {
             }
         });
     });
+
+    $("#nav-screeplot").click(function() {
+        $(".scree-plot").show()
+        $(".biplot").hide()
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:5000/screeplot",
+            data: {},
+            success: function(response) {
+                scree_plot(response)
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+
+
+    $("#nav-biplot").click(function() {
+        $(".scree-plot").hide()
+        $(".biplot").show()
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:5000/biplot",
+            data: null,
+            success: function(response) {
+                biplot(response)
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+
 });

@@ -1,35 +1,32 @@
 function scatterplot_matrix(data) {
     data = d3.entries(data)
     n = 4;
-    var width = 1000,
+    var width = 1100,
         size = (width / n) - 12,
-        padding = 24;
+        padding = 30;
 
-    var x = d3.scaleLinear()
+    var xScale = d3.scaleLinear()
         .range([padding / 2, size - padding / 2]);
 
-    var y = d3.scaleLinear()
+    var yScale = d3.scaleLinear()
         .range([size - padding / 2, padding / 2]);
 
     // var xAxis = d3.axisBottom().scale(x).orient("bottom").tickFormat(d3.format("d"));
     var xAxis = d3.axisBottom()
-        .scale(x)
-        .ticks(5)
-        .tickFormat(d3.format("d"));
+        .scale(xScale)
+        .ticks(5);
 
     var yAxis = d3.axisLeft()
-        .scale(y)
-        .ticks(5)
-        .tickFormat(d3.format("d"));
-
+        .scale(yScale)
+        .ticks(5);
     traits = []
     for (key in data[0].value) {
-        traits.push(key)
+        if (key != "label") {
+            traits.push(key)
+        }
     }
-    console.log(traits)
 
-
-    var color = "red";
+    var color = "blue"
     var domainByTrait = {};
 
     traits.forEach(function(trait) {
@@ -38,109 +35,111 @@ function scatterplot_matrix(data) {
         });
     });
 
-    console.log(domainByTrait)
+    color_pick = ["blue", "green", "yellow", "black", "grey", "gold", "darkgreen", "pink", "brown", "slateblue", "grey1", "orange"]
 
-    // xAxis.tickSize(size * n);
-    // yAxis.tickSize(-size * n);
+    xAxis.tickSize(size * n);
+    yAxis.tickSize(-size * n);
 
-    // var svg = d3.select("#scatterplot-matrix").append("svg")
-    //     .attr("width", size * n + padding)
-    //     .attr("height", size * n + padding)
-    //     .append("g")
-    // .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
+    d3.select("#scatterplot-matrix").selectAll("*").remove()
 
-    // svg.selectAll(".x.axis")
-    //     .data(traits)
-    //     .enter().append("g")
-    //     .attr("class", "x axis")
-    //     .attr("transform", function(d, i) {
-    //         return "translate(" + (n - i - 1) * size + ",0)";
-    //     })
-    //     .each(function(d) {
-    //         x.domain(domainByTrait[d]).nice();
-    //         d3.select(this).call(xAxis);
-    //     });
+    var svg = d3.select("#scatterplot-matrix").append("svg")
+        .attr("width", width + 10)
+        .attr("height", width + 10)
+        .append("g")
+        .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
 
-    // svg.selectAll(".y.axis")
-    //     .data(traits)
-    //     .enter().append("g")
-    //     .attr("class", "y axis")
-    //     .attr("transform", function(d, i) {
-    //         return "translate(0," + i * size + ")";
-    //     })
-    //     .each(function(d) {
-    //         y.domain(domainByTrait[d]);
-    //         d3.select(this).call(yAxis);
-    //     });
+    svg.selectAll(".xAxis")
+        .data(traits)
+        .enter().append("g")
+        .attr("class", "axis")
+        .attr("transform", function(d, i) {
+            return "translate(" + (n - i - 1) * size + ",0)";
+        })
+        .each(function(d) {
+            xScale.domain(domainByTrait[d]).nice();
+            d3.select(this).call(xAxis);
+        });
 
-    // var cell = svg.selectAll(".cell")
-    //     .data(cross(traits, traits))
-    //     .enter().append("g")
-    //     .attr("class", "cell")
-    //     .attr("transform", function(d) {
-    //         return "translate(" + (n - d.i - 1) * size + "," + d.j * size + ")";
-    //     })
-    //     .each(plot);
+    svg.selectAll(".yAxis")
+        .data(traits)
+        .enter().append("g")
+        .attr("class", "axis")
+        .attr("transform", function(d, i) {
+            return "translate(0," + i * size + ")";
+        })
+        .each(function(d) {
+            yScale.domain(domainByTrait[d]).nice();
+            d3.select(this).call(yAxis);
+        });
 
-    // // Titles for the diagonal.
-    // cell.filter(function(d) {
-    //         return d.i === d.j;
-    //     }).append("text")
-    //     .attr("x", size / 2)
-    //     .attr("y", size / 2)
-    //     .attr("text-anchor", "middle")
-    //     .text(function(d) {
-    //         return d.x;
-    //     });
+    var cell = svg.selectAll(".cell")
+        .data(cross(traits, traits))
+        .enter().append("g")
+        .attr("class", "cell")
+        .attr("transform", function(d) {
+            return "translate(" + (n - d.i - 1) * size + "," + d.j * size + ")";
+        })
+        .each(plot);
 
-    // function plot(p) {
-    //     var cell = d3.select(this);
+    // Titles for the diagonal.
+    cell.filter(function(d) {
+            return d.i === d.j;
+        }).append("text")
+        .attr("x", size / 2)
+        .attr("y", size / 2)
+        .attr("text-anchor", "middle")
+        .text(function(d) {
+            return d.x;
+        });
 
-    //     x.domain(domainByTrait[p.x]);
-    //     y.domain(domainByTrait[p.y]);
+    function plot(p) {
+        var cell = d3.select(this);
 
-    //     cell.append("rect")
-    //         .attr("class", "frame")
-    //         .classed("diagonal", function(d) {
-    //             return d.i === d.j;
-    //         })
-    //         .attr("x", padding / 2)
-    //         .attr("y", padding / 2)
-    //         .attr("width", size - padding)
-    //         .attr("height", size - padding);
+        xScale.domain(domainByTrait[p.x]);
+        yScale.domain(domainByTrait[p.y]);
 
-    //     cell.filter(function(d) {
-    //             return d.i !== d.j;
-    //         }) // hide diagonal marks
-    //         .selectAll("circle")
-    //         .data(data)
-    //         .enter().append("circle")
-    //         .attr("cx", function(d) {
-    //             return x(d[p.x]);
-    //         })
-    //         .attr("cy", function(d) {
-    //             return y(d[p.y]);
-    //         })
-    //         .attr("r", 2.5)
-    //         .style("fill", function(d) {
-    //             return color(d["Major"]);
-    //         });
-    // }
+        cell.append("rect")
+            .attr("class", "frame")
+            .classed("diagonal", function(d) {
+                return d.i === d.j;
+            })
+            .attr("x", padding / 2)
+            .attr("y", padding / 2)
+            .attr("width", size - padding)
+            .attr("height", size - padding);
+
+        cell.filter(function(d) {
+                return d.i !== d.j;
+            }) // hide diagonal marks
+            .selectAll("circle")
+            .data(data)
+            .enter().append("circle")
+            .attr("cx", function(d) {
+                return xScale(d.value[p.x]);
+            })
+            .attr("cy", function(d) {
+                return yScale(d.value[p.y]);
+            })
+            .attr("r", 2.5)
+            .style("fill", function(d) {
+                return color_pick[d.value.label];
+            });
+    }
 
 
-    // function cross(a, b) {
-    //     var c = [],
-    //         n = a.length,
-    //         m = b.length,
-    //         i, j;
-    //     for (i = -1; ++i < n;)
-    //         for (j = -1; ++j < m;) c.push({
-    //             x: a[i],
-    //             i: i,
-    //             y: b[j],
-    //             j: j
-    //         });
-    //     return c;
-    // }
+    function cross(a, b) {
+        var c = [],
+            n = a.length,
+            m = b.length,
+            i, j;
+        for (i = -1; ++i < n;)
+            for (j = -1; ++j < m;) c.push({
+                x: a[i],
+                i: i,
+                y: b[j],
+                j: j
+            });
+        return c;
+    }
 
 }

@@ -1,26 +1,35 @@
 from sklearn.datasets import load_breast_cancer
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
 import numpy as np
 import math
 import pandas as pd
 import pprint
 
+data_raw = pd.read_csv('flowers.csv')
+remove_categorical = ["species"]
+dataset = data_raw.drop(columns = remove_categorical)
+features = dataset.columns
+data_npy = dataset.to_numpy()
 
-breast = load_breast_cancer()
-features = breast.feature_names
-breast_data = breast.data
 
-dataset = pd.DataFrame(breast_data)
-dataset.columns = features
+# breast = load_breast_cancer()
+# features = breast.feature_names
+# data_npy = breast.data
+# dataset = pd.DataFrame(data_npy)
+# dataset.columns = features
 
 std_sklr = StandardScaler()
-x = std_sklr.fit_transform(X = breast_data)
-pca_breast = PCA(n_components=10)
-principalComponents_breast = pca_breast.fit_transform(x)
-eigen_values = pca_breast.explained_variance_
+x = std_sklr.fit_transform(X = data_npy)
+pca_data = PCA(n_components=len(features))
+norm_principalComponents_data = pca_data.fit_transform(x)
 
-def get_data():
+min_max_sklr = MinMaxScaler(feature_range=(-1,1))
+norm_principalComponents_data = min_max_sklr.fit_transform(X = norm_principalComponents_data)
+eigen_values = pca_data.explained_variance_
+
+def get_data(): 
     scree_plot = {}
     eigen_total = sum(eigen_values)
     variance_percentage = []
@@ -38,18 +47,26 @@ def get_data():
     return scree_plot
 
 def get_top_pca():
-    data_send = {}
+    feature_contri = {}
     count = 0
-    for i, j, k in zip(features, pca_breast.components_[0], pca_breast.components_[1]):
-        data_send[count] = {}
-        data_send[count]["name"] = i
-        data_send[count]["pc1"] = j
-        data_send[count]["pc2"] = k
+    for i, j, k in zip(features, pca_data.components_[0], pca_data.components_[1]):
+        feature_contri[count] = {}
+        feature_contri[count]["name"] = i
+        feature_contri[count]["pc1"] = j
+        feature_contri[count]["pc2"] = k
         count += 1
-    return data_send
+        
+    top_pca = norm_principalComponents_data[:,:2]
+    plot_pca = {}
+    for i in range(0, len(top_pca)):
+        plot_pca[i] = {}
+        plot_pca[i]['pc1'] = top_pca[i, 0]
+        plot_pca[i]['pc2'] = top_pca[i, 1]
+        
+    return feature_contri, plot_pca
 
 def get_top_four_features(di = 3):
-    squared_value = pca_breast.components_[:di] ** 2
+    squared_value = pca_data.components_[:di] ** 2
 
     features_dict = {}
     for i in range(0, len(squared_value[0])):
@@ -72,10 +89,15 @@ def get_top_four_matrix(di = 3):
     imp_features = get_top_four_features(di)
     imp_features_arr = [i for i in imp_features]
     np_data = dataset[imp_features_arr].to_numpy()
+
+    cluster_features = [i for i in imp_features]
+    featured_data = dataset[cluster_features]
+    kmeans = KMeans(n_clusters=2, random_state=0).fit(featured_data)
+
     send_data = {}
     for i in range(0, np_data.shape[0]):
         send_data[i] = {}
         for j in range(0, len(imp_features_arr)):
             send_data[i][imp_features_arr[j]] = np_data[i][j]
-    
+        send_data[i]['label'] = int(kmeans.labels_[i])
     return send_data
