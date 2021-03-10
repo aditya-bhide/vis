@@ -1,9 +1,9 @@
 function biplot(data_all) {
 
-    let svg_width = 900
-    let svg_height = 550
-    let circleRadius = 5
-    let pointRadius = 3
+    let svg_width = 1250
+    let svg_height = 800
+    let circleRadius = 7
+    let pointRadius = 5
     var margin = { top: 40, right: 30, bottom: 80, left: 100 },
         width = svg_width - margin.left - margin.right,
         height = svg_height - margin.top - margin.bottom;
@@ -29,13 +29,6 @@ function biplot(data_all) {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-
-    // xdomain = d3.extent(data, xValue)
-    // if (xdomain[0] > 0) {
-    //     xdomain[0] = -0.1
-    // }
-    // xdomain[1] += 0.1
-
     d3.extent(data, xValue)
     var xScale = d3.scaleLinear()
         .domain(d3.extent(scatter_data, xSValue))
@@ -50,7 +43,7 @@ function biplot(data_all) {
         .attr('y', 50)
         .attr('x', width / 2)
         .text(xAxisLabel)
-        .attr("font-size", "2.5em");
+        .style("font-size", "2.5em");
 
     // Add Y axis
     var yScale = d3.scaleLinear()
@@ -66,7 +59,7 @@ function biplot(data_all) {
         .attr('x', -height / 2)
         .text(yAxisLabel)
         .style('text-anchor', 'middle')
-        .attr("font-size", "3em")
+        .style("font-size", "2.5em")
         .attr('transform', 'rotate(-90)');
 
     var randomColor = (function() {
@@ -111,7 +104,8 @@ function biplot(data_all) {
         .attr('x1', xScale(0))
         .attr('y2', d => yScale(yValue(d)))
         .attr('x2', d => xScale(xValue(d)))
-        .style("stroke", randomColor);
+        .style("stroke", randomColor)
+        .style("stroke-width", "3px");
 
     svg.append("g").selectAll('circle').data(scatter_data)
         .enter().append('circle')
@@ -127,24 +121,24 @@ function biplot(data_all) {
         .attr('cy', d => yScale(yValue(d)))
         .attr('cx', d => xScale(xValue(d)))
         .attr('r', circleRadius)
-        .style("fill", "yellow");
+        .style("fill", "red");
 
+    d3.selectAll(".tooltip").remove()
     let div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
-
 
     function mouseover(d) {
         d3.select(this).transition()
             .duration('100')
             .attr("r", 7)
-            .style('fill', 'red');
+            .style('fill', 'green');
 
         div.transition()
             .duration(100)
             .style("opacity", 1);
 
-        div.html(`${nameValue(d)} \n PC1: ${xValue(d).toFixed(3)} \n PC2: ${yValue(d).toFixed(3)}`)
+        div.html(`${nameValue(d).charAt(0).toUpperCase() + nameValue(d).slice(1)} \n PC1: ${xValue(d).toFixed(3)} \n PC2: ${yValue(d).toFixed(3)}`)
             .style("left", (d3.event.pageX + 10) + "px")
             .style("top", (d3.event.pageY - 15) + "px");
     }
@@ -153,7 +147,7 @@ function biplot(data_all) {
         d3.select(this).transition()
             .duration('200')
             .attr("r", circleRadius)
-            .style('fill', 'yellow');
+            .style('fill', 'red');
 
         div.transition()
             .duration('200')

@@ -1,4 +1,4 @@
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import load_wine
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
@@ -7,19 +7,21 @@ import math
 import pandas as pd
 import pprint
 
-data_raw = pd.read_csv('flowers.csv')
-remove_categorical = ["species"]
-dataset = data_raw.drop(columns = remove_categorical)
-features = dataset.columns
-data_npy = dataset.to_numpy()
+# data_raw = pd.read_csv('flowers.csv')
+# data_raw = pd.read_csv('winequality-red.csv')
+# remove_categorical = []
+# dataset = data_raw.drop(columns = remove_categorical)
+# features = dataset.columns
+# data_npy = dataset.to_numpy()
 
 
-# breast = load_breast_cancer()
-# features = breast.feature_names
-# data_npy = breast.data
-# dataset = pd.DataFrame(data_npy)
-# dataset.columns = features
-
+wine = load_wine()
+features = wine.feature_names
+data_npy = wine.data
+dataset = pd.DataFrame(data_npy)
+features = [i.replace("_", " ") for i in features]
+dataset.columns = features
+print(features)
 std_sklr = StandardScaler()
 x = std_sklr.fit_transform(X = data_npy)
 pca_data = PCA(n_components=len(features))
@@ -73,7 +75,7 @@ def get_top_four_features(di = 3):
         total = 0
         for j in range(0, len(squared_value)):
             total += squared_value[j][i]
-        features_dict[features[i]] = math.sqrt(total)
+        features_dict[features[i]] = total
 
     sorted_features_dict = [k for k, v in sorted(features_dict.items(), key=lambda item: item[1])]
     sorted_features_dict = sorted_features_dict[::-1]
@@ -92,7 +94,7 @@ def get_top_four_matrix(di = 3):
 
     cluster_features = [i for i in imp_features]
     featured_data = dataset[cluster_features]
-    kmeans = KMeans(n_clusters=2, random_state=0).fit(featured_data)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(featured_data)
 
     send_data = {}
     for i in range(0, np_data.shape[0]):

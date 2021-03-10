@@ -1,25 +1,36 @@
+let select_bar = false
+let select_bar_index = 0
+
+function home_display() {
+    $.ajax({
+        type: 'POST',
+        url: "http://127.0.0.1:5000/init_home",
+        data: {},
+        success: function(response) {
+            console.log(response)
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
+
+}
+
 $(document).ready(function() {
+    $(".home").show()
     $(".scree-plot").hide()
     $(".biplot").hide()
 
-    $("#select-intrinsic-dimentionality-index").click(function() {
-        let di
-        di = $("#intrinsic-dimentionality-index").text()
-        $.ajax({
-            type: 'POST',
-            url: "http://127.0.0.1:5000/id_index",
-            data: { 'data': di },
-            success: function(response) {
-                show_table(response["feature_data"])
-                scatterplot_matrix(response["chart_data"])
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
+    home_display()
+
+    $("#nav-home").click(function() {
+        $(".home").show()
+        $(".scree-plot").hide()
+        $(".biplot").hide()
     });
 
     $("#nav-screeplot").click(function() {
+        $(".home").hide()
         $(".scree-plot").show()
         $(".biplot").hide()
         $.ajax({
@@ -35,8 +46,8 @@ $(document).ready(function() {
         });
     });
 
-
     $("#nav-biplot").click(function() {
+        $(".home").hide()
         $(".scree-plot").hide()
         $(".biplot").show()
         $.ajax({

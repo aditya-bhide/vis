@@ -1,6 +1,6 @@
 function scree_plot(data) {
     // set the dimensions and margins of the graph
-    let svg_width = 900
+    let svg_width = 800
     let svg_height = 550
     let circleRadius = 5
     var margin = { top: 40, right: 30, bottom: 80, left: 100 },
@@ -34,19 +34,12 @@ function scree_plot(data) {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-    // append the svg object to the body of the page
     var xScale = d3.scaleLinear()
         .domain([0, d3.max(data, xValue) * 1.05])
         .range([0, width])
         .nice();
 
-    // tickArr = xScale.ticks()
-    // tickDistance = xScale(tickArr[tickArr.length - 1]) - xScale(tickArr[tickArr.length - 2]);
-
     tickDistance = height / feature_count
-
-    // var ticksCount = xScale.ticks()[0]
-    // xScale.ticks(ticksCount + 1)
 
     var xAxis = svg.append("g")
         .attr("transform", "translate(0," + height + ")")
@@ -57,9 +50,8 @@ function scree_plot(data) {
         .attr('y', 50)
         .attr('x', width / 2)
         .text(xAxisLabel)
-        .attr("font-size", "2.5em");
+        .style("font-size", "2.5em");
 
-    // Add Y axis
     var yScale = d3.scaleLinear()
         .domain([0, d3.max(data, yValue)])
         .range([height, 0])
@@ -78,7 +70,7 @@ function scree_plot(data) {
         .attr('x', -height / 2)
         .text(yAxisLabel)
         .style('text-anchor', 'middle')
-        .attr("font-size", "3em")
+        .style("font-size", "2.5em")
         .attr('transform', 'rotate(-90)');
 
     let line = d3.line()
@@ -86,7 +78,6 @@ function scree_plot(data) {
         .y(d => yScale(yValue(d)))
         .curve(d3.curveMonotoneX);
 
-    // Add the line
     svg.append("path")
         .datum(data)
         .attr("fill", "none")
@@ -94,8 +85,8 @@ function scree_plot(data) {
         .attr("stroke-width", 1.5)
         .attr("d", line);
 
-
-    var combine = svg.selectAll('.rect-bar')
+    var combine = svg.append("g").attr("class", "rect-circle-scree-combine")
+        .selectAll('.rect-bar')
         .data(data)
         .enter()
         .append("g")
@@ -106,7 +97,6 @@ function scree_plot(data) {
         .on("click", pca_click)
         .on("mouseover", mouseover)
         .on("mouseout", mouseout)
-        .transition().duration(1000)
         .attr('x', function(d) { return xScale(xValue(d)) - (tickDistance / 2) })
         .attr('y', d => yScale(barValue(d)))
         .attr('width', tickDistance)
@@ -117,20 +107,23 @@ function scree_plot(data) {
         .attr("class", "circle-point")
         .on("click", pca_click)
         .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
         .on("mouseout", mouseout)
         .attr('cy', d => yScale(yValue(d)))
         .attr('cx', d => xScale(xValue(d)))
         .attr('r', circleRadius)
         .style("fill", "steelblue");
 
+    d3.selectAll(".tooltip").remove()
     let div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
 
     function mouseover(d) {
-        d3.select(this.parentNode).selectAll('.rect-bar').style("fill", "red")
-        d3.select(this.parentNode).selectAll('.circle-point').style("fill", "red")
-
+        for (var i = 0; i < xValue(d); i++) {
+            d3.select(this.parentNode.parentNode.childNodes[i]).select('.rect-bar').style("fill", "red").style("opacity", "0.5")
+            d3.select(this.parentNode.parentNode.childNodes[i]).select('.circle-point').style("fill", "red").style("opacity", "0.5")
+        }
         div.transition()
             .duration(100)
             .style("opacity", 1);
@@ -138,20 +131,82 @@ function scree_plot(data) {
         div.html(`Percentage data: %${yValue(d).toFixed(2)}`)
             .style("left", (d3.event.pageX + 10) + "px")
             .style("top", (d3.event.pageY - 15) + "px");
+    }
+
+    function mousemove(d) {
+        div.html(`Percentage data: %${yValue(d).toFixed(2)}`)
+            .style("left", (d3.event.pageX + 10) + "px")
+            .style("top", (d3.event.pageY - 15) + "px");
 
     }
 
-    function mouseout() {
-        d3.select(this.parentNode).selectAll('.rect-bar').style("fill", "steelblue")
-        d3.select(this.parentNode).selectAll('.circle-point').style("fill", "steelblue")
-
+    function mouseout(d) {
+        if (select_bar) {
+            for (var i = 0; i < xValue(d); i++) {
+                d3.select(this.parentNode.parentNode.childNodes[i]).select('.rect-bar').style("fill", "red").style("opacity", "1")
+                d3.select(this.parentNode.parentNode.childNodes[i]).select('.circle-point').style("fill", "red").style("opacity", "1")
+            }
+            for (var i = xValue(d); i < d3.max(data, xValue); i++) {
+                d3.select(this.parentNode.parentNode.childNodes[i]).select('.rect-bar').style("fill", "steelblue").style("opacity", "1")
+                d3.select(this.parentNode.parentNode.childNodes[i]).select('.circle-point').style("fill", "steelblue").style("opacity", "1")
+            }
+        } else {
+            for (var i = 0; i < select_bar_index; i++) {
+                d3.select(this.parentNode.parentNode.childNodes[i]).select('.rect-bar').style("fill", "red").style("opacity", "1")
+                d3.select(this.parentNode.parentNode.childNodes[i]).select('.circle-point').style("fill", "red").style("opacity", "1")
+            }
+            for (var i = select_bar_index; i < d3.max(data, xValue); i++) {
+                d3.select(this.parentNode.parentNode.childNodes[i]).select('.rect-bar').style("fill", "steelblue").style("opacity", "1")
+                d3.select(this.parentNode.parentNode.childNodes[i]).select('.circle-point').style("fill", "steelblue").style("opacity", "1")
+            }
+        }
+        select_bar = false
         div.transition()
             .duration('200')
             .style("opacity", 0);
     }
 
     function pca_click(d) {
+        select_bar = true
+        select_bar_index = xValue(d)
+        for (var i = 0; i < select_bar_index; i++) {
+            d3.select(this.parentNode.parentNode.childNodes[i]).select('.rect-bar').style("fill", "red").style("opacity", "1")
+            d3.select(this.parentNode.parentNode.childNodes[i]).select('.circle-point').style("fill", "red").style("opacity", "1")
+        }
+        for (var i = select_bar_index; i < d3.max(data, xValue); i++) {
+            d3.select(this.parentNode.parentNode.childNodes[i]).select('.rect-bar').style("fill", "steelblue").style("opacity", "1")
+            d3.select(this.parentNode.parentNode.childNodes[i]).select('.circle-point').style("fill", "steelblue").style("opacity", "1")
+        }
         $("#intrinsic-dimentionality-index").html(xValue(d))
 
+
+        $(document).ready(function() {
+            let di
+            di = $("#intrinsic-dimentionality-index").text()
+            $.ajax({
+                type: 'POST',
+                url: "http://127.0.0.1:5000/id_index",
+                data: { 'data': di },
+                success: function(response) {
+                    show_table(response["feature_data"])
+                    scatterplot_matrix(response["chart_data"])
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
     }
+
+    $(document).ready(function() {
+        let node_rect_circle = d3.select('.rect-circle-scree-combine').node().childNodes
+        for (var i = 0; i < select_bar_index; i++) {
+            temp1 = d3.select(node_rect_circle[i].childNodes[0]).style("fill", "red").style("opacity", "1")
+            temp2 = d3.select(node_rect_circle[i].childNodes[1]).style("fill", "red").style("opacity", "1")
+        }
+        for (var i = select_bar_index; i < d3.max(data, xValue); i++) {
+            d3.select(node_rect_circle[i].childNodes[0]).style("fill", "steelblue").style("opacity", "1")
+            d3.select(node_rect_circle[i].childNodes[1]).style("fill", "steelblue").style("opacity", "1")
+        }
+    });
 }

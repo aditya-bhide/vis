@@ -7,26 +7,36 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    raw_data = get_data()
-    data_json = json.dumps(raw_data, indent=2)
-    data = {'chart_data':data_json}
-    return render_template("index.html", data=data)
+    # raw_data = get_data()
+    # data_json = json.dumps(raw_data, indent=2)
+    # data = {'chart_data':data_json}
+    # return render_template("index.html", data=data)
+    return render_template("index.html")
+
+@app.route("/init_home", methods=["POST", "GET"])
+def init_home():
+    if request.method == "POST":
+        print("SHit is happening")
+        # raw_data = get_data()
+        # data_json = json.dumps(raw_data, indent=2)
+        data = {'chart_data':"fool"}
+        return data
+    else:
+        print("ERROR")
 
 @app.route("/screeplot", methods=["POST", "GET"])
 def id_index():
     if request.method == "POST":
-        print("SHit is happening")
         raw_data = get_data()
         # data_json = json.dumps(raw_data, indent=2)
         data = {'chart_data':raw_data}
         return data
     else:
-        print("I fucked up")
+        print("ERROR")
 
 @app.route("/id_index", methods=["POST", "GET"])
 def screeplot():
     if request.method == "POST":
-        print("SHit is happening")
         data_back = request.form['data']
         four_features = get_top_four_features(int(data_back))
         chart_data = get_top_four_matrix(int(data_back))
@@ -34,7 +44,7 @@ def screeplot():
         data = {'feature_data':four_features, 'chart_data': chart_data}
         return data
     else:
-        print("I fucked up")
+        print("ERROR")
 
 @app.route("/biplot", methods=["POST", "GET"])
 def call_biplot():
@@ -44,9 +54,7 @@ def call_biplot():
         data = {'feature_contri' : feature_contri,'plot_pca' :plot_pca }
         return data
     else:
-        print("I fucked up")
-
-    
+        print("ERROR")
 
 if __name__ == "__main__":
     app.run(debug=True)

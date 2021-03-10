@@ -1,7 +1,7 @@
 function scatterplot_matrix(data) {
     data = d3.entries(data)
     n = 4;
-    var width = 1100,
+    var width = 900,
         size = (width / n) - 12,
         padding = 30;
 
@@ -11,7 +11,6 @@ function scatterplot_matrix(data) {
     var yScale = d3.scaleLinear()
         .range([size - padding / 2, padding / 2]);
 
-    // var xAxis = d3.axisBottom().scale(x).orient("bottom").tickFormat(d3.format("d"));
     var xAxis = d3.axisBottom()
         .scale(xScale)
         .ticks(5);
@@ -35,7 +34,7 @@ function scatterplot_matrix(data) {
         });
     });
 
-    color_pick = ["blue", "green", "yellow", "black", "grey", "gold", "darkgreen", "pink", "brown", "slateblue", "grey1", "orange"]
+    color_pick = ["blue", "green", "red", "black", "grey", "gold", "orange", "pink", "brown", "slateblue", "grey1", "darkgreen"]
 
     xAxis.tickSize(size * n);
     yAxis.tickSize(-size * n);
@@ -81,7 +80,6 @@ function scatterplot_matrix(data) {
         })
         .each(plot);
 
-    // Titles for the diagonal.
     cell.filter(function(d) {
             return d.i === d.j;
         }).append("text")
@@ -110,7 +108,7 @@ function scatterplot_matrix(data) {
 
         cell.filter(function(d) {
                 return d.i !== d.j;
-            }) // hide diagonal marks
+            })
             .selectAll("circle")
             .data(data)
             .enter().append("circle")
@@ -125,7 +123,6 @@ function scatterplot_matrix(data) {
                 return color_pick[d.value.label];
             });
     }
-
 
     function cross(a, b) {
         var c = [],
