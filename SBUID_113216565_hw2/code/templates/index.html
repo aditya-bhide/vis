@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <link rel="shortcut icon" href="#">
+
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-grid.min.css') }}"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="static/js/framework/jquery-3.6.0.min.js"></script>
+    <!-- <script src="static/js/framework/bootstrap.bundle.min.js"></script> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script src="static/js/screeplot.js"></script>
+    <script src="static/js/biplot.js"></script>
+    <script src="static/js/scatterplot_matrix.js"></script>
+    <script src="static/js/feature_table_generator.js"></script>
+    <script src="static/js/index.js"></script>
+    <title>Homework2</title>
+
+</head>
+
+<body>
+    <div id="heading">
+        <h1 id="heading-assignment">CSE 564 Visualization Assignment 2</h1>
+    </div>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav">
+                <li id="nav-home"><a href="#">Home</a></li>
+                <li><a id="nav-screeplot" href="#">Screeplot</a></li>
+                <li><a id="nav-biplot" href="#">Biplot</a></li>
+                <!-- <li><a id="nav-temp" href="#">Some crap</a></li> -->
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="home">
+            <h1>Dataset Information: Wine Dataset</h1>
+            <h2>Link to dataset</h2>
+            <a style="font-size:1.2em;" href="https://archive.ics.uci.edu/ml/datasets/wine">https://archive.ics.uci.edu/ml/datasets/wine</a>
+            <h2>About Data</h2>
+            <p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; This dataset is the results of a chemical analysis of wines grown in the same region in Italy but derived from three different cultivars. The analysis determined the quantities of 13 constituents
+                found in each of the three types of wines. Originally the dataset was supposed to be used for testing classification models. But in this assignment I also tried to observe if we get clusters which are similar to the already given classification
+                labels.
+            </p>
+            <h2>Attributes</h2>
+            <p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; The original dataset had some possible spelling mistakes. I have added corrected spelling if someone finds the given attribute names difficult to understand. All attributes are numerical.</p>
+            <ol class="list-attributes">
+                <li class="list-attributes-elemetn">Alcohol</li>
+                <li class="list-attributes-elemetn">Malic acid</li>
+                <li class="list-attributes-elemetn">Ash</li>
+                <li class="list-attributes-elemetn">Alcalinity of ash (Alkalinity of ash)</li>
+                <li class="list-attributes-elemetn">Magnesium</li>
+                <li class="list-attributes-elemetn">Total phenols</li>
+                <li class="list-attributes-elemetn">Flavanoids (Flavonoids)</li>
+                <li class="list-attributes-elemetn">Nonflavanoid phenols (Non Flavonoid phenols)</li>
+                <li class="list-attributes-elemetn">Proanthocyanins (Proanthocyanidins)</li>
+                <li class="list-attributes-elemetn">Color intensity</li>
+                <li class="list-attributes-elemetn">Hue</li>
+                <li class="list-attributes-elemetn">OD280/OD315 of diluted wines</li>
+                <li class="list-attributes-elemetn">Proline</li>
+            </ol>
+        </div>
+        <div class="scree-plot">
+            <div class="grid-container">
+                <div class="item1">
+                    <h3> Intrinsic Dimensionality Index : <span id='intrinsic-dimentionality-index'>None</span></h3>
+                    <div id="scree-plot-graph"></div>
+
+                </div>
+                <div class="item2">
+                    <div id="imp-features-table-div"></div>
+                </div>
+                <div class="item3">
+                    <div id="scatterplot-matrix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="biplot">
+        <div id="biplot-graph"></div>
+    </div>
+</body>
+
+</html>
