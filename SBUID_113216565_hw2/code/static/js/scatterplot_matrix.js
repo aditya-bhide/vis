@@ -1,5 +1,6 @@
 function scatterplot_matrix(data) {
     data = d3.entries(data)
+    console.log(d3.legend)
     n = 4;
     var width = 920,
         size = (width / n) - 12,
@@ -27,7 +28,6 @@ function scatterplot_matrix(data) {
         }
     }
 
-    var color = "blue"
     var domainByTrait = {};
 
     traits.forEach(function(trait) {
@@ -37,9 +37,13 @@ function scatterplot_matrix(data) {
     });
 
     color_pick = ["blue", "green", "red", "black", "grey", "gold", "orange", "pink", "brown", "slateblue", "grey1", "darkgreen"]
-
+    keys = ["Cluster 1", "Cluster 2", "Cluster 3"]
     xAxis.tickSize(size * n);
     yAxis.tickSize(-size * n);
+
+    color_scale = d3.scaleOrdinal()
+        .domain(data.map(d => d.label))
+        .range(color_pick);
 
     d3.select("#scatterplot-matrix").selectAll("*").remove()
 
@@ -48,6 +52,27 @@ function scatterplot_matrix(data) {
         .attr("height", width + 10)
         .append("g")
         .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
+
+    svg.selectAll("mydots")
+        .data(keys)
+        .enter()
+        .append("circle")
+        .attr("cx", function(d, i) { return 20 + i * 100 })
+        .attr("cy", 0) // 100 is where the first dot appears. 25 is the distance between dots
+        .attr("r", 7)
+        .style("fill", function(d, i) { return color_pick[i] })
+
+    // Add one dot in the legend for each name.
+    svg.selectAll("mylabels")
+        .data(keys)
+        .enter()
+        .append("text")
+        .attr("x", function(d, i) { return 30 + i * 100 })
+        .attr("y", 2) // 100 is where the first dot appears. 25 is the distance between dots
+        .style("fill", function(d) { return color_pick[d] })
+        .text(function(d) { return d })
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
 
     svg.append('text')
         .attr('fill', 'black')
@@ -59,7 +84,7 @@ function scatterplot_matrix(data) {
     svg.selectAll(".xAxis")
         .data(traits)
         .enter().append("g")
-        .attr("class", "axis")
+        .attr("class", "axis-scatterplotmatrix")
         .attr("transform", function(d, i) {
             return "translate(" + (n - i - 1) * size + ",0)";
         })
@@ -71,7 +96,7 @@ function scatterplot_matrix(data) {
     svg.selectAll(".yAxis")
         .data(traits)
         .enter().append("g")
-        .attr("class", "axis")
+        .attr("class", "axis-scatterplotmatrix")
         .attr("transform", function(d, i) {
             return "translate(0," + i * size + ")";
         })

@@ -20,6 +20,9 @@ $(document).ready(function() {
     $(".home").show()
     $(".scree-plot").hide()
     $(".biplot").hide()
+    $(".mds").hide()
+    $(".pcp").hide()
+
 
     home_display()
 
@@ -27,12 +30,20 @@ $(document).ready(function() {
         $(".home").show()
         $(".scree-plot").hide()
         $(".biplot").hide()
+        $(".mds").hide()
+        $(".pcp").hide()
+
+
     });
 
     $("#nav-screeplot").click(function() {
         $(".home").hide()
         $(".scree-plot").show()
         $(".biplot").hide()
+        $(".mds").hide()
+        $(".pcp").hide()
+
+
         $.ajax({
             type: 'POST',
             url: "http://127.0.0.1:5000/screeplot",
@@ -50,6 +61,9 @@ $(document).ready(function() {
         $(".home").hide()
         $(".scree-plot").hide()
         $(".biplot").show()
+        $(".mds").hide()
+        $(".pcp").hide()
+
         $.ajax({
             type: 'POST',
             url: "http://127.0.0.1:5000/biplot",
@@ -62,5 +76,46 @@ $(document).ready(function() {
             }
         });
     });
+
+    $("#nav-mds").click(function() {
+        $(".home").hide()
+        $(".scree-plot").hide()
+        $(".biplot").hide()
+        $(".mds").show()
+        $(".pcp").hide()
+
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:5000/mds",
+            data: null,
+            success: function(response) {
+                mds_scatterplot(response)
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+
+    $("#nav-pcp").click(function() {
+        $(".home").hide()
+        $(".scree-plot").hide()
+        $(".biplot").hide()
+        $(".mds").hide()
+        $(".pcp").show()
+
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:5000/pcp",
+            data: null,
+            success: function(response) {
+                plot_pca(response)
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+
 
 });

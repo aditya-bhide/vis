@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for
 import json
-from calculatepca import get_data, get_top_pca, get_top_four_features, get_top_four_matrix
+from calculatepca import get_data, get_top_pca, get_top_four_features, get_top_four_matrix, get_mds, get_pcp
 import pprint
 
 app = Flask(__name__)
@@ -55,6 +55,27 @@ def call_biplot():
         return data
     else:
         print("ERROR")
+
+@app.route("/mds", methods=["POST", "GET"])
+def call_mds():
+    if request.method == "POST":
+        print("SHit is happening")
+        mds_data = get_mds()
+        data = {"chart_data": mds_data}
+        return data
+    else:
+        print("ERROR")
+
+@app.route("/pcp", methods=["POST", "GET"])
+def call_pcp():
+    if request.method == "POST":
+        print("SHit is happening")
+        pcp_data = get_pcp()
+        data = {"chart_data": pcp_data}
+        return data
+    else:
+        print("ERROR")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

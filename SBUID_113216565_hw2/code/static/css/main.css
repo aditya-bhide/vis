@@ -73,6 +73,41 @@ p {
     padding-left: 10%;
 }
 
+.mds {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#group-buttons-mds {
+    margin-left: 100px;
+    margin-bottom: 50px;
+}
+
+.buttons-mds {
+    display: inline-block;
+    padding: 15px 25px;
+    font-size: 24px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+}
+
+.buttons-mds:hover {
+    background-color: #3e8e41
+}
+
+.buttons-mds:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+
 svg {
     font: 10px sans-serif;
     padding: 12px;
@@ -97,21 +132,44 @@ td {
     background-color: blanchedalmond;
 }
 
-.axis,
+.background-pcp path {
+    fill: none;
+    stroke: #ddd;
+    shape-rendering: crispEdges;
+}
+
+.foreground-pcp path {
+    fill: none;
+    stroke: steelblue;
+}
+
+.axis-pcp line,
+.axis-pcp path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.axis-pcp text {
+    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+    cursor: move;
+}
+
+.axis-scatterplotmatrix,
 .frame {
     shape-rendering: crispEdges;
 }
 
-.axis line {
+.axis-scatterplotmatrix line {
     stroke: #e8e8e8;
     opacity: 0.5;
 }
 
-.axis path {
+.axis-scatterplotmatrix path {
     display: none;
 }
 
-.axis text {
+.axis-scatterplotmatrix text {
     fill: black;
 }
 

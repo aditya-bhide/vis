@@ -2,6 +2,7 @@ from sklearn.datasets import load_wine
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
+from sklearn.manifold import MDS
 import numpy as np
 import math
 import pandas as pd
@@ -21,7 +22,6 @@ data_npy = wine.data
 dataset = pd.DataFrame(data_npy)
 features = [i.replace("_", " ") for i in features]
 dataset.columns = features
-print(features)
 std_sklr = StandardScaler()
 x = std_sklr.fit_transform(X = data_npy)
 pca_data = PCA(n_components=len(features))
@@ -30,6 +30,7 @@ norm_principalComponents_data = pca_data.fit_transform(x)
 min_max_sklr = MinMaxScaler(feature_range=(-1,1))
 norm_principalComponents_data = min_max_sklr.fit_transform(X = norm_principalComponents_data)
 eigen_values = pca_data.explained_variance_
+
 
 def get_data(): 
     scree_plot = {}
@@ -103,3 +104,27 @@ def get_top_four_matrix(di = 3):
             send_data[i][imp_features_arr[j]] = np_data[i][j]
         send_data[i]['label'] = int(kmeans.labels_[i])
     return send_data
+
+def get_mds():
+    embeddings = MDS(n_components=2, random_state=0)
+    for_mds = std_sklr.fit_transform(data_npy)
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(for_mds)
+    transformed = embeddings.fit_transform(for_mds)
+    # transformed = std_sklr.fit_transform(transformed)
+    print(embeddings.get_params())
+    mds_data = []
+    for i in range(13):
+        mds_data.append({'dim1': transformed[i][0], 'dim2': transformed[i][1], 'label': int(kmeans.labels_[i])})
+    return mds_data
+
+def get_pcp():
+    kmeans = KMeans(n_clusters=3, random_state=0).fit(data_npy)
+    pcp_data = []
+    for i in range(data_npy.shape[0]):
+        entry = {}
+        for j in range(data_npy.shape[1]):
+            entry[features[j]] = data_npy[i][j]
+
+        entry['label'] = "cluster" + str(kmeans.labels_[i])
+        pcp_data.append(entry)
+    return pcp_data
