@@ -60,8 +60,8 @@ def call_biplot():
 def call_mds():
     if request.method == "POST":
         print("SHit is happening")
-        mds_data = get_mds()
-        data = {"chart_data": mds_data}
+        mds_data, mds_attr_data = get_mds()
+        data = {"chart_data": mds_data, "chart_attr_data":mds_attr_data}
         return data
     else:
         print("ERROR")

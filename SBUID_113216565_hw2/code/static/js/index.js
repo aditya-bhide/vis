@@ -89,7 +89,10 @@ $(document).ready(function() {
             url: "http://127.0.0.1:5000/mds",
             data: null,
             success: function(response) {
-                mds_scatterplot(response)
+                $("#mds-scatterplot-graph-data").show()
+                $("#mds-scatterplot-graph-attr").hide()
+                mds_data_scatterplot(response)
+                mds_attr_scatterplot(response)
             },
             error: function(error) {
                 console.log(error);
@@ -116,6 +119,14 @@ $(document).ready(function() {
             }
         });
     });
+    $("#buttons-mds-data").click(function() {
+        $("#mds-scatterplot-graph-data").show()
+        $("#mds-scatterplot-graph-attr").hide()
 
+    });
 
+    $("#buttons-mds-attr").click(function() {
+        $("#mds-scatterplot-graph-data").hide()
+        $("#mds-scatterplot-graph-attr").show()
+    });
 });

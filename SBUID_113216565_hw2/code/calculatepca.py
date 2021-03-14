@@ -111,11 +111,19 @@ def get_mds():
     kmeans = KMeans(n_clusters=3, random_state=0).fit(for_mds)
     transformed = embeddings.fit_transform(for_mds)
     # transformed = std_sklr.fit_transform(transformed)
-    print(embeddings.get_params())
     mds_data = []
-    for i in range(13):
+    for i in range(transformed.shape[0]):
         mds_data.append({'dim1': transformed[i][0], 'dim2': transformed[i][1], 'label': int(kmeans.labels_[i])})
-    return mds_data
+
+    for_mds_attr = dataset.corr().to_numpy()
+    embeddings_corr = MDS(n_components=2, dissimilarity='precomputed',random_state=0)
+    transformed2 = embeddings_corr.fit_transform(for_mds_attr)
+    
+    mds_attr_data = []
+    for i in range(transformed2.shape[0]):
+        mds_attr_data.append({'dim1': transformed2[i][0], 'dim2': transformed2[i][1]})
+
+    return mds_data, mds_attr_data
 
 def get_pcp():
     kmeans = KMeans(n_clusters=3, random_state=0).fit(data_npy)
