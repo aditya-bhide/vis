@@ -208,7 +208,7 @@ circle.hidden {
 div.tooltip {
     position: absolute;
     text-align: center;
-    padding: .2rem;
+    padding: 0.7rem;
     background: #313639;
     color: #f9f9f9;
     border: 0px;

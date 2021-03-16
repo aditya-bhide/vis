@@ -12,6 +12,10 @@ function plot_pca(data) {
     clusters = ["cluster0", "cluster1", "cluster2"]
     clusters_names = ["Cluster 0", "Cluster 1", "Cluster 2"]
 
+    var color = d3.scaleOrdinal()
+        .domain(clusters)
+        .range([color_pick[0], color_pick[1], color_pick[2]])
+
     data = data.chart_data
 
     var x = d3.scalePoint().range([0, width], 1),
@@ -101,11 +105,6 @@ function plot_pca(data) {
             .attr("text-anchor", "left")
             .style("alignment-baseline", "middle")
             .style("font-size", "2em")
-
-
-        var color = d3.scaleOrdinal()
-            .domain(clusters)
-            .range([color_pick[0], color_pick[1], color_pick[2]])
 
         // Extract the list of dimensions and create a scale for each.
         x.domain(dimensions = d3.keys(data[0]).filter(function(d) {

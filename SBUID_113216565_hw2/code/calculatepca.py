@@ -115,13 +115,13 @@ def get_mds():
     for i in range(transformed.shape[0]):
         mds_data.append({'dim1': transformed[i][0], 'dim2': transformed[i][1], 'label': int(kmeans.labels_[i])})
 
-    for_mds_attr = dataset.corr().to_numpy()
+    for_mds_attr = np.abs(1 - dataset.corr().to_numpy())
     embeddings_corr = MDS(n_components=2, dissimilarity='precomputed',random_state=0)
     transformed2 = embeddings_corr.fit_transform(for_mds_attr)
     
     mds_attr_data = []
     for i in range(transformed2.shape[0]):
-        mds_attr_data.append({'dim1': transformed2[i][0], 'dim2': transformed2[i][1]})
+        mds_attr_data.append({'dim1': transformed2[i][0], 'dim2': transformed2[i][1], "feature": features[i]})
 
     return mds_data, mds_attr_data
 

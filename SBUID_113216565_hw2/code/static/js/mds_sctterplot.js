@@ -131,6 +131,7 @@ function mds_attr_scatterplot(data) {
 
     xValue = d => d.value.dim1
     yValue = d => d.value.dim2
+    fValue = d => d.value.feature
     colorValue = d => d.value.label
 
     xAxisLabel = 'Dimention 1'
@@ -145,42 +146,6 @@ function mds_attr_scatterplot(data) {
         .append("g")
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
-
-
-    // Add one dot in the legend for each name.
-
-    // legend = svg.append("g")
-    //     .attr("class", "legend")
-    //     .attr("transform", `translate(${width-120}, 0)`);
-
-    // legend.append('rect')
-    //     .attr("x", 0)
-    //     .attr("y", 0)
-    //     .attr("height", 100)
-    //     .attr("width", 120)
-    //     .style("fill", "none")
-    //     .style("stroke", "black");
-
-    // legend.selectAll("mydots")
-    //     .data(keys)
-    //     .enter()
-    //     .append("circle")
-    //     .attr("cx", 18)
-    //     .attr("cy", function(d, i) { return 30 + i * 25 }) // 100 is where the first dot appears. 25 is the distance between dots
-    //     .attr("r", 7)
-    //     .style("fill", function(d, i) { return color_pick[i] })
-
-    // legend.selectAll("mylabels")
-    //     .data(keys)
-    //     .enter()
-    //     .append("text")
-    //     .attr("x", 28)
-    //     .attr("y", function(d, i) { return 32 + i * 25 }) // 100 is where the first dot appears. 25 is the distance between dots
-    //     .style("fill", function(d) { return color_pick[d] })
-    //     .text(function(d) { return d })
-    //     .attr("text-anchor", "left")
-    //     .style("alignment-baseline", "middle")
-    //     .style("font-size", "2em")
 
     svg.append('text')
         .attr('fill', 'black')
@@ -224,8 +189,29 @@ function mds_attr_scatterplot(data) {
 
     svg.append("g").selectAll('circle').data(data)
         .enter().append('circle')
+        .on("mouseover", mouseover)
+        .on("mouseout", mouseout)
         .attr('cy', d => yScale(yValue(d)))
         .attr('cx', d => xScale(xValue(d)))
         .attr('r', circleRadius)
-        .style("fill", d => color_pick[colorValue(d)]);
+        .style("fill", "steelblue")
+        .style("opacity", 1);
+
+    d3.selectAll(".tooltip").remove()
+    let div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    function mouseover(d) {
+        d3.select(this).style("fill", "red")
+        div.html(fValue(d))
+            .style("left", (d3.event.pageX + 10) + "px")
+            .style("top", (d3.event.pageY - 15) + "px")
+            .style("opacity", 1);
+    }
+
+    function mouseout(d) {
+        d3.select(this).style("fill", "steelblue");
+        div.style("opacity", 0);
+    }
 }
