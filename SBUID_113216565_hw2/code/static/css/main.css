@@ -132,27 +132,67 @@ td {
     background-color: blanchedalmond;
 }
 
-.background-pcp path {
+#reset-pcp-and-mds {
+    display: inline-block;
+    padding: 15px 25px;
+    font-size: 24px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+}
+
+#reset-pcp-and-mds:hover {
+    background-color: #3e8e41
+}
+
+#reset-pcp-and-mds:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+
+.foreground path {
+    fill: none;
+    stroke: steelblue;
+}
+
+.foreground path.fade {
+    stroke: #000;
+    stroke-opacity: .05;
+}
+
+.background path {
     fill: none;
     stroke: #ddd;
     shape-rendering: crispEdges;
 }
 
-.foreground-pcp path {
-    fill: none;
-    stroke: steelblue;
+.brush .extent .selection {
+    /*fill: red;*/
+    fill-opacity: .3;
+    stroke: #fff;
+    shape-rendering: crispEdges;
 }
 
 .axis-pcp line,
 .axis-pcp path {
     fill: none;
     stroke: #000;
+    stroke-width: 2px;
     shape-rendering: crispEdges;
 }
 
 .axis-pcp text {
-    text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+    text-shadow: 0 1px 0 #fff;
     cursor: move;
+    font-size: 13pt;
+    fill: black;
 }
 
 .axis-scatterplotmatrix,
@@ -217,4 +257,10 @@ div.tooltip {
     font-size: .7rem;
     white-space: pre-wrap;
     font-size: 1.5em;
+}
+
+.brush .extent {
+    fill-opacity: .3;
+    stroke: #fff;
+    shape-rendering: crispEdges;
 }

@@ -19,7 +19,9 @@ function plot_pca(data_total) {
         attribute_dict = {}
 
         for (var i in data_pcp[0]) {
-            // attribute_list.push(i)
+            // if (i != "label") {
+            //     attribute_list.push(i)
+            // }
             attribute_dict[i] = false
         }
 
@@ -134,6 +136,7 @@ function plot_pca(data_total) {
                 var index = attribute_list.indexOf(fValue(d));
                 if (index !== -1) {
                     attribute_list.splice(index, 1);
+                    console.log()
                 }
                 d3.select(this).style("fill", "steelblue").style("fill-opacity", 0.7);
             }
@@ -143,85 +146,47 @@ function plot_pca(data_total) {
     }
 }
 
-function pcp_generate(data_pcp, attribute_list) {
+function pcp_generate(data_pcp, traits) {
     /// PCA part ///
-    var margin = {
-            top: 200,
-            right: 82,
-            bottom: 50,
-            left: 82
-        },
-        width = 1300 - margin.left - margin.right,
-        height = 800 - margin.top - margin.bottom;
+    dragging = {};
+    var background;
+    var m = [200, 80, 50, 80],
+        w = 1300 - m[1] - m[3],
+        h = 900 - m[0] - m[2];
+
+    var x = d3.scalePoint().domain(traits).range([0, w]),
+        y = {};
+    var line = d3.line(),
+        axis = d3.axisLeft(),
+        foreground;
 
     color_pick = ["blue", "darkgreen", "red", "black", "grey", "gold", "orange", "pink", "brown", "slateblue", "grey1", "darkgreen"]
     clusters = ["cluster0", "cluster1", "cluster2"]
     clusters_names = ["Cluster 0", "Cluster 1", "Cluster 2"]
-
-    var color = d3.scaleOrdinal()
-        .domain(clusters)
-        .range([color_pick[0], color_pick[1], color_pick[2]])
-
-
-    var x = d3.scalePoint().range([0, width], 1),
-        y = {},
-        dragging = {};
-
-    // Highlight the specie that is hovered
-    var highlight = function(d) {
-
-        label = d.label
-
-        // first every group turns grey
-        d3.selectAll(".line")
-            .transition().duration(200)
-            .style("stroke", "lightgrey")
-            .style("opacity", "0.5")
-
-        // Second the hovered specie takes its color
-        d3.selectAll("." + label)
-            .transition().duration(200)
-            .style("stroke", color(label))
-            .style("opacity", "1")
-    }
-
-    // Unhighlight
-    var doNotHighlight = function(d) {
-        d3.selectAll(".line")
-            .transition().duration(200).delay(1000)
-            .style("stroke", function(d) {
-                return (color(d.label))
-            })
-            .style("opacity", "1")
-    }
-
-    var line = d3.line(),
-        axis = d3.axisLeft(),
-        // background,
-        foreground;
 
 
     d3.select("#pcp-graph").selectAll("*").remove()
+    console.log(d3.select("#pcp-graph").selectAll("*").remove())
     $(document).ready(function() {
 
         var svg = d3.select("#pcp-graph").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("width", w + m[1] + m[3])
+            .attr("height", h + m[0] + m[2])
             .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
         graph_title = "Parallel Coordinates Plot"
         svg.append('text')
             .attr('fill', 'black')
             .attr('y', -150)
-            .attr('x', width / 2)
+            .attr('x', w / 2)
             .text(graph_title)
             .style("font-size", "4em")
             .style("text-anchor", "middle");
 
         legend = svg.append("g")
             .attr("class", "legend")
-            .attr("transform", `translate(${width-450}, -150)`);
+            .attr("transform", `translate(${w-450}, -150)`);
 
         legend.append('rect')
             .attr("x", 0)
@@ -234,11 +199,13 @@ function pcp_generate(data_pcp, attribute_list) {
         legend.selectAll("mydots")
             .data(clusters_names)
             .enter()
-            .append("circle")
-            .attr("cx", function(d, i) { return 30 + i * 140 })
-            .attr("cy", 25) // 100 is where the first dot appears. 25 is the distance between dots
-            .attr("r", 7)
-            .style("fill", function(d, i) { return color_pick[i] })
+            .append("line")
+            .attr("x1", function(d, i) { return 20 + i * 140 })
+            .attr("y1", 25) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("x2", function(d, i) { return 35 + i * 140 })
+            .attr("y2", 25)
+            .style("stroke", function(d, i) { return color_pick[i] })
+            .style("stroke-width", "2px")
 
         legend.selectAll("mylabels")
             .data(clusters_names)
@@ -252,243 +219,70 @@ function pcp_generate(data_pcp, attribute_list) {
             .style("alignment-baseline", "middle")
             .style("font-size", "2em")
 
-        // Extract the list of dimensions and create a scale for each.
-        x.domain(dimensions = attribute_list.filter(function(d) {
-            return d != "label" && (y[d] = d3.scaleLinear()
-                .domain(d3.extent(data_pcp, function(p) {
-                    return +p[d];
-                }))
-                .range([height, 0]));
-        }));
-
-        // Add grey background lines for context.
-        // background = svg.append("g")
-        //     .attr("class", "background-pcp")
-        //     .selectAll("path")
-        //     .data(data_pcp)
-        //     .enter().append("path")
-        //     .attr("d", path);
-
-        // Add blue foreground lines for focus
-        foreground = svg.append("g")
-            .attr("class", "foreground-pcp")
-            .selectAll("path")
-            .data(data_pcp)
-            .enter().append("path")
-            .attr("class", function(d) {
-                return "line " + d.label
-            })
-            .attr("d", path)
-            .style("fill", "none")
-            .style("stroke", function(d) {
-                return (color(d.label))
-            })
-            .style("opacity", 0.5)
-            .on("mouseover", highlight)
-            .on("mouseout", doNotHighlight);
-
-        // Add a group element for each dimension.
-        var g = svg.selectAll(".dimension")
-            .data(dimensions)
-            .enter().append("g")
-            .attr("class", "dimension")
-            .attr("transform", function(d) {
-                return "translate(" + x(d) + ")";
+        // Create a scale and brush for each trait.
+        traits.forEach(function(d) {
+            // Coerce values to numbers.
+            data_pcp.forEach(function(p) {
+                p[d] = +p[d];
             });
-
-        // Add an axis and title.
-        g.append("g")
-            .attr("class", "axis-pcp")
-            .each(function(d) {
-                d3.select(this).call(axis.scale(y[d]));
-            })
-            .append("text")
-            .style("text-anchor", "middle")
-            .attr("transform", "rotate(25)")
-            .attr("y", -40)
-            .text(function(d) {
-                return d;
-            })
-            .style("fill", "black");
-
-        function position(d) {
-            var v = dragging[d];
-            return v == null ? x(d) : v;
-        }
-
-        function transition(g) {
-            return g.transition().duration(500);
-        }
-
-        // Returns the path for a given data point.
-        function path(d) {
-            return line(dimensions.map(function(p) {
-                return [position(p), y[p](d[p])];
-            }));
-        }
-
-    });
-}
-
-function pcp_default(data) {
-
-    /// PCA part ///
-    var margin = {
-            top: 200,
-            right: 82,
-            bottom: 50,
-            left: 82
-        },
-        width = 1800 - margin.left - margin.right,
-        height = 900 - margin.top - margin.bottom;
-
-    color_pick = ["blue", "darkgreen", "red", "black", "grey", "gold", "orange", "pink", "brown", "slateblue", "grey1", "darkgreen"]
-    clusters = ["cluster0", "cluster1", "cluster2"]
-    clusters_names = ["Cluster 0", "Cluster 1", "Cluster 2"]
-
-    data_pcp = data.chart_data
-
-    var color = d3.scaleOrdinal()
-        .domain(clusters)
-        .range([color_pick[0], color_pick[1], color_pick[2]])
-
-
-    var x = d3.scalePoint().range([0, width], 1),
-        y = {},
-        dragging = {};
-
-    // Highlight the specie that is hovered
-    var highlight = function(d) {
-
-        label = d.label
-
-        // first every group turns grey
-        d3.selectAll(".line")
-            .transition().duration(200)
-            .style("stroke", "lightgrey")
-            .style("opacity", "0.5")
-
-        // Second the hovered specie takes its color
-        d3.selectAll("." + label)
-            .transition().duration(200)
-            .style("stroke", color(label))
-            .style("opacity", "1")
-    }
-
-    // Unhighlight
-    var doNotHighlight = function(d) {
-        d3.selectAll(".line")
-            .transition().duration(200).delay(1000)
-            .style("stroke", function(d) {
-                return (color(d.label))
-            })
-            .style("opacity", "1")
-    }
-
-    var line = d3.line(),
-        axis = d3.axisLeft(),
-        // background,
-        foreground;
-
-
-    $(document).ready(function() {
-        d3.select("#default-pcp-graph").selectAll("*").remove()
-        var svg = d3.select("#default-pcp-graph").append("svg")
-            .attr("id", "svg-default-pcp-graph")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        graph_title = "Parallel Coordinates Plot"
-        svg.append('text')
-            .attr('fill', 'black')
-            .attr('y', -150)
-            .attr('x', width / 2)
-            .text(graph_title)
-            .style("font-size", "4em")
-            .style("text-anchor", "middle");
-
-        legend = svg.append("g")
-            .attr("class", "legend")
-            .attr("transform", `translate(${width-450}, -150)`);
-
-        legend.append('rect')
-            .attr("x", 0)
-            .attr("y", 10)
-            .attr("height", 30)
-            .attr("width", 450)
-            .style("fill", "none")
-            .style("stroke", "black");
-
-        legend.selectAll("mydots")
-            .data(clusters_names)
-            .enter()
-            .append("circle")
-            .attr("cx", function(d, i) { return 30 + i * 140 })
-            .attr("cy", 25) // 100 is where the first dot appears. 25 is the distance between dots
-            .attr("r", 7)
-            .style("fill", function(d, i) { return color_pick[i] })
-
-        legend.selectAll("mylabels")
-            .data(clusters_names)
-            .enter()
-            .append("text")
-            .attr("x", function(d, i) { return 45 + i * 140 })
-            .attr("y", 27) // 100 is where the first dot appears. 25 is the distance between dots
-            .style("fill", function(d) { return color_pick[d] })
-            .text(function(d) { return d })
-            .attr("text-anchor", "left")
-            .style("alignment-baseline", "middle")
-            .style("font-size", "2em")
-
-        // Extract the list of dimensions and create a scale for each.
-        x.domain(dimensions = d3.keys(data_pcp[0]).filter(function(d) {
-            return d != "label" && (y[d] = d3.scaleLinear()
+            y[d] = d3.scaleLinear()
                 .domain(d3.extent(data_pcp, function(p) {
-                    return +p[d];
+                    return p[d];
                 }))
-                .range([height, 0]));
-        }));
+                .range([h, 0]);
+            y[d].brush = d3.brushY()
+                .extent([
+                    [-7, y[d].range()[1]],
+                    [7, y[d].range()[0]]
+                ]) //刷子范围
+                .on("brush", brush)
+                .on("start", brushstart)
+                .on("end", brush);
+        });
 
-        // Add blue foreground lines for focus
-        foreground = svg.append("g")
-            .attr("class", "foreground-pcp")
+        background = svg.append("g")
+            .attr("class", "background")
             .selectAll("path")
             .data(data_pcp)
             .enter().append("path")
-            .attr("class", function(d) {
-                return "line " + d.label
-            })
             .attr("d", path)
-            .style("fill", "none")
-            .style("stroke", function(d) {
-                return (color(d.label))
-            })
-            .style("opacity", 0.5)
-            .on("mouseover", highlight)
-            .on("mouseout", doNotHighlight);
 
-        // Add a group element for each dimension.
-        var g = svg.selectAll(".dimension")
-            .data(dimensions)
-            .enter().append("g")
-            .attr("class", "dimension")
+        // Add foreground lines.
+        foreground = svg.append("g")
+            .attr("class", "foreground")
+            .selectAll("path")
+            .data(data_pcp)
+            .enter().append("path")
+            .attr("d", path)
+            .style("stroke", function(d) {
+                return (color_pick[parseInt(d.label)])
+            });;
+
+        // Add a group element for each trait.
+        var g = svg.selectAll(".trait")
+            .data(traits)
+            .enter().append("svg:g")
+            .attr("class", "trait")
             .attr("transform", function(d) {
                 return "translate(" + x(d) + ")";
             })
             .call(d3.drag()
-
+                .subject(function(d) {
+                    return {
+                        x: x(d)
+                    };
+                })
                 .on("start", function(d) {
                     dragging[d] = x(d);
+                    background.attr("visibility", "hidden");
                 })
                 .on("drag", function(d) {
-                    dragging[d] = Math.min(width, Math.max(0, d3.event.x));
+                    dragging[d] = Math.min(w, Math.max(0, d3.event.x));
                     foreground.attr("d", path);
-                    dimensions.sort(function(a, b) {
+                    traits.sort(function(a, b) {
                         return position(a) - position(b);
                     });
-                    x.domain(dimensions);
+                    x.domain(traits);
                     g.attr("transform", function(d) {
                         return "translate(" + position(d) + ")";
                     })
@@ -497,23 +291,40 @@ function pcp_default(data) {
                     delete dragging[d];
                     transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
                     transition(foreground).attr("d", path);
-
-                }));
+                    background
+                        .attr("d", path)
+                        .transition()
+                        .delay(500)
+                        .duration(0)
+                        .attr("visibility", null);
+                })
+            );
 
         // Add an axis and title.
-        g.append("g")
+        g.append("svg:g")
             .attr("class", "axis-pcp")
             .each(function(d) {
-                d3.select(this).call(axis.scale(y[d]));
+                d3.select(this).call(d3.axisLeft(y[d]));
             })
-            .append("text")
-            .style("text-anchor", "middle")
-            .attr("transform", "rotate(25)")
-            .attr("y", -40)
+            .append("svg:text")
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(30)")
+            .style("opacity", 1)
+            .attr("y", -20)
             .text(function(d) {
                 return d;
+            });
+
+        // Add a brush for each axis.
+        g.append("svg:g")
+            .attr("class", "brush")
+            .each(function(d) {
+                d3.select(this).call(y[d].brush);
             })
-            .style("fill", "black");
+            .selectAll("rect")
+            .attr("x", -8)
+            .attr("width", 16);
+
 
         function position(d) {
             var v = dragging[d];
@@ -523,14 +334,74 @@ function pcp_default(data) {
         function transition(g) {
             return g.transition().duration(500);
         }
-
         // Returns the path for a given data point.
         function path(d) {
-            return line(dimensions.map(function(p) {
+            return line(traits.map(function(p) {
                 return [position(p), y[p](d[p])];
             }));
         }
 
-    });
 
+        function dragstart(d) {
+            i = traits.indexOf(d);
+        }
+
+        function drag(d) {
+            x.range()[i] = d3.event.x; //unsovled issue
+            traits.sort(function(a, b) {
+                return x(a) - x(b);
+            });
+            g.attr("transform", function(d) {
+                return "translate(" + x(d) + ")";
+            });
+            foreground.attr("d", path);
+        }
+
+        function dragend(d) {
+            //            x.domain(traits).rangePoints([0, w]);
+            var t = d3.transition().duration(500);
+            t.selectAll(".trait").attr("transform", function(d) {
+                return "translate(" + x(d) + ")";
+            });
+            t.selectAll(".foreground path").attr("d", path);
+        }
+
+
+        function brushstart() {
+            d3.event.sourceEvent.stopPropagation();
+        }
+        // Handles a brush event, toggling the display of foreground lines.
+        function brush() {
+            var actives = [];
+            //filter brushed extents
+            svg.selectAll(".brush")
+                .filter(function(d) {
+                    return d3.brushSelection(this);
+                })
+                .each(function(d) {
+                    actives.push({
+                        dimension: d,
+                        extent: d3.brushSelection(this)
+                    });
+                });
+            //set un-brushed foreground line disappear
+            foreground.classed("fade", function(d, i) {
+                return !actives.every(function(active) {
+                    var dim = active.dimension;
+                    return active.extent[0] <= y[dim](d[dim]) && y[dim](d[dim]) <= active.extent[1];
+                });
+            });
+        }
+    });
+}
+
+function default_pcp(data_total) {
+    data_pcp = data_total.chart_data
+    temp = []
+    for (var i in data_pcp[0]) {
+        if (i != "label") {
+            temp.push(i)
+        }
+    }
+    pcp_generate(data_pcp, temp)
 }

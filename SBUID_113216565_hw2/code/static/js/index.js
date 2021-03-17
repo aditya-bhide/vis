@@ -7,7 +7,7 @@ function home_display() {
         url: "http://127.0.0.1:5000/init_home",
         data: {},
         success: function(response) {
-            console.log(response)
+            console.log()
         },
         error: function(error) {
             console.log(error);
@@ -114,6 +114,8 @@ $(document).ready(function() {
             data: null,
             success: function(response) {
                 plot_pca(response)
+                default_pcp(response)
+
             },
             error: function(error) {
                 console.log(error);
@@ -121,20 +123,38 @@ $(document).ready(function() {
         });
     });
 
-    $("#nav-pcp").click(function() {
-        $(".home").hide()
-        $(".scree-plot").hide()
-        $(".biplot").hide()
-        $(".mds").hide()
-        $(".mds-corr").hide()
-        $(".pcp").show()
+    // $("#nav-pcp").click(function() {
+    //     $(".home").hide()
+    //     $(".scree-plot").hide()
+    //     $(".biplot").hide()
+    //     $(".mds").hide()
+    //     $(".mds-corr").hide()
+    //     $(".pcp").show()
 
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: "http://127.0.0.1:5000/pcp",
+    //         data: null,
+    //         success: function(response) {
+    //             pcp_default(response)
+    //             default_pcp(response)
+    //         },
+    //         error: function(error) {
+    //             console.log(error);
+    //         }
+    //     });
+    // });
+
+    $("#reset-pcp-and-mds").click(function() {
+        d3.select("#mds-scatterplot-graph-attr").selectAll("*").remove()
+        d3.select("#pcp-graph").selectAll("*").remove()
         $.ajax({
             type: 'POST',
             url: "http://127.0.0.1:5000/pcp",
             data: null,
             success: function(response) {
-                pcp_default(response)
+                plot_pca(response)
+                default_pcp(response)
             },
             error: function(error) {
                 console.log(error);

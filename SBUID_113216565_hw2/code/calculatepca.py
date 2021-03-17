@@ -125,7 +125,7 @@ def get_pcp():
         for j in range(data_npy.shape[1]):
             entry[features[j]] = data_npy[i][j]
 
-        entry['label'] = "cluster" + str(kmeans.labels_[i])
+        entry['label'] = int(kmeans.labels_[i])
         pcp_data.append(entry)
 
     for_mds_attr = np.abs(1 - dataset.corr().to_numpy())
