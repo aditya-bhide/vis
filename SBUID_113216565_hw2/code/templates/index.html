@@ -36,6 +36,7 @@
                 <li><a id="nav-screeplot" href="#">Screeplot</a></li>
                 <li><a id="nav-biplot" href="#">Biplot</a></li>
                 <li><a id="nav-mds" href="#">MDS</a></li>
+                <li><a id="nav-mds-corr" href="#">MDS Corr</a></li>
                 <li><a id="nav-pcp" href="#">PCP</a></li>
             </ul>
         </div>
@@ -89,14 +90,18 @@
     </div>
     <div class="mds">
         <div id="group-buttons-mds">
-            <button class="buttons-mds" id="buttons-mds-data">MDS data Scatterplot</button>
-            <button class="buttons-mds" id="buttons-mds-attr">MDS |1-Correlation| Scatterplot</button>
+            <!-- <button class="buttons-mds" id="buttons-mds-data">MDS data Scatterplot</button>
+            <button class="buttons-mds" id="buttons-mds-attr">MDS |1-Correlation| Scatterplot</button> -->
         </div>
         <div id="mds-scatterplot-graph-data"></div>
-        <div id="mds-scatterplot-graph-attr"></div>
+    </div>
+    <div class="mds-corr">
+        <div id="mds-scatterplot-graph-attr" style="float: left;"></div>
+        <div id="pcp-graph"></div>
+
     </div>
     <div class="pcp">
-        <div id="pcp-graph"></div>
+        <div id="default-pcp-graph"></div>
     </div>
 </body>
 

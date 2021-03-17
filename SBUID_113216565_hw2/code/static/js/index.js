@@ -21,6 +21,7 @@ $(document).ready(function() {
     $(".scree-plot").hide()
     $(".biplot").hide()
     $(".mds").hide()
+    $(".mds-corr").hide()
     $(".pcp").hide()
 
 
@@ -31,9 +32,8 @@ $(document).ready(function() {
         $(".scree-plot").hide()
         $(".biplot").hide()
         $(".mds").hide()
+        $(".mds-corr").hide()
         $(".pcp").hide()
-
-
     });
 
     $("#nav-screeplot").click(function() {
@@ -41,6 +41,7 @@ $(document).ready(function() {
         $(".scree-plot").show()
         $(".biplot").hide()
         $(".mds").hide()
+        $(".mds-corr").hide()
         $(".pcp").hide()
 
 
@@ -62,6 +63,7 @@ $(document).ready(function() {
         $(".scree-plot").hide()
         $(".biplot").show()
         $(".mds").hide()
+        $(".mds-corr").hide()
         $(".pcp").hide()
 
         $.ajax({
@@ -82,6 +84,7 @@ $(document).ready(function() {
         $(".scree-plot").hide()
         $(".biplot").hide()
         $(".mds").show()
+        $(".mds-corr").hide()
         $(".pcp").hide()
 
         $.ajax({
@@ -89,10 +92,7 @@ $(document).ready(function() {
             url: "http://127.0.0.1:5000/mds",
             data: null,
             success: function(response) {
-                $("#mds-scatterplot-graph-data").show()
-                $("#mds-scatterplot-graph-attr").hide()
                 mds_data_scatterplot(response)
-                mds_attr_scatterplot(response)
             },
             error: function(error) {
                 console.log(error);
@@ -100,12 +100,13 @@ $(document).ready(function() {
         });
     });
 
-    $("#nav-pcp").click(function() {
+    $("#nav-mds-corr").click(function() {
         $(".home").hide()
         $(".scree-plot").hide()
         $(".biplot").hide()
         $(".mds").hide()
-        $(".pcp").show()
+        $(".mds-corr").show()
+        $(".pcp").hide()
 
         $.ajax({
             type: 'POST',
@@ -119,14 +120,25 @@ $(document).ready(function() {
             }
         });
     });
-    $("#buttons-mds-data").click(function() {
-        $("#mds-scatterplot-graph-data").show()
-        $("#mds-scatterplot-graph-attr").hide()
 
-    });
+    $("#nav-pcp").click(function() {
+        $(".home").hide()
+        $(".scree-plot").hide()
+        $(".biplot").hide()
+        $(".mds").hide()
+        $(".mds-corr").hide()
+        $(".pcp").show()
 
-    $("#buttons-mds-attr").click(function() {
-        $("#mds-scatterplot-graph-data").hide()
-        $("#mds-scatterplot-graph-attr").show()
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:5000/pcp",
+            data: null,
+            success: function(response) {
+                pcp_default(response)
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
     });
 });

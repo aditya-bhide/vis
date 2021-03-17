@@ -35,7 +35,7 @@ function scree_plot(data) {
         .append("g")
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
-        
+
     svg.append('text')
         .attr('fill', 'black')
         .attr('y', -10)
@@ -130,8 +130,8 @@ function scree_plot(data) {
 
     function mouseover(d) {
         for (var i = 0; i < xValue(d); i++) {
-            d3.select(this.parentNode.parentNode.childNodes[i]).select('.rect-bar').style("fill", "red").style("opacity", "0.5")
-            d3.select(this.parentNode.parentNode.childNodes[i]).select('.circle-point').style("fill", "red").style("opacity", "0.5")
+            d3.select(this.parentNode.parentNode.childNodes[i]).select('.rect-bar').style("fill", "red").style("opacity", "1")
+            d3.select(this.parentNode.parentNode.childNodes[i]).select('.circle-point').style("fill", "red").style("opacity", "1")
         }
         div.transition()
             .duration(100)

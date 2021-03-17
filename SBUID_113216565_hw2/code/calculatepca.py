@@ -115,15 +115,7 @@ def get_mds():
     for i in range(transformed.shape[0]):
         mds_data.append({'dim1': transformed[i][0], 'dim2': transformed[i][1], 'label': int(kmeans.labels_[i])})
 
-    for_mds_attr = np.abs(1 - dataset.corr().to_numpy())
-    embeddings_corr = MDS(n_components=2, dissimilarity='precomputed',random_state=0)
-    transformed2 = embeddings_corr.fit_transform(for_mds_attr)
-    
-    mds_attr_data = []
-    for i in range(transformed2.shape[0]):
-        mds_attr_data.append({'dim1': transformed2[i][0], 'dim2': transformed2[i][1], "feature": features[i]})
-
-    return mds_data, mds_attr_data
+    return mds_data
 
 def get_pcp():
     kmeans = KMeans(n_clusters=3, random_state=0).fit(data_npy)
@@ -135,4 +127,13 @@ def get_pcp():
 
         entry['label'] = "cluster" + str(kmeans.labels_[i])
         pcp_data.append(entry)
-    return pcp_data
+
+    for_mds_attr = np.abs(1 - dataset.corr().to_numpy())
+    embeddings_corr = MDS(n_components=2, dissimilarity='precomputed',random_state=0)
+    transformed2 = embeddings_corr.fit_transform(for_mds_attr)
+    
+    mds_attr_data = []
+    for i in range(transformed2.shape[0]):
+        mds_attr_data.append({'dim1': transformed2[i][0], 'dim2': transformed2[i][1], "feature": features[i]})
+
+    return pcp_data, mds_attr_data
