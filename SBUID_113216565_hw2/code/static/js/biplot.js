@@ -132,7 +132,6 @@ function biplot(data_all) {
         .attr('r', circleRadius)
         .style("fill", "red");
 
-    d3.selectAll(".tooltip").remove()
     let div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);

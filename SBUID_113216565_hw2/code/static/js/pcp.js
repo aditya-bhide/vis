@@ -33,8 +33,8 @@ function plot_pca(data_total) {
         fValue = d => d.value.feature
         colorValue = d => d.value.label
 
-        xAxisLabel = 'Dimention 1'
-        yAxisLabel = 'Dimention 2'
+        xAxisLabel = 'Dimension 1'
+        yAxisLabel = 'Dimension 2'
         var svg = d3.select("#mds-scatterplot-graph-attr")
             .append("svg")
             .attr("id", "svg-mds-scatterplot-graph-attr")
@@ -96,7 +96,6 @@ function plot_pca(data_total) {
             .style("fill", "steelblue")
             .style("fill-opacity", 0.7)
 
-        d3.selectAll(".tooltip").remove()
         let div = d3.select("body").append("div")
             .attr("class", "tooltip")
             .style("opacity", 0);
@@ -160,7 +159,7 @@ function pcp_generate(data_pcp, traits) {
         axis = d3.axisLeft(),
         foreground;
 
-    color_pick = ["blue", "darkgreen", "red", "black", "grey", "gold", "orange", "pink", "brown", "slateblue", "grey1", "darkgreen"]
+    color_pick = ["slateblue", "brown", "gold", "black", "grey", "red", "orange", "pink", "darkgreen", "slateblue", "grey1", "darkgreen"]
     clusters = ["cluster0", "cluster1", "cluster2"]
     clusters_names = ["Cluster 0", "Cluster 1", "Cluster 2"]
 

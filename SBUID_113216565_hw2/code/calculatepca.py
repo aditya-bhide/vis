@@ -8,20 +8,26 @@ import math
 import pandas as pd
 import pprint
 
-# data_raw = pd.read_csv('Wine.csv')
-# remove_categorical = []
-# dataset = data_raw.drop(columns = remove_categorical)
-# features = dataset.columns
-# data_npy = dataset.to_numpy()
-
+data_raw = pd.read_csv('Rice-Gonen andJasmine.csv')
+remove_categorical = ['Class']
+dataset_total = data_raw.sample(frac=0.01, random_state=23)
+dataset_total['Class'] = pd.factorize(dataset_total.Class)[0]
+dataset_total_npy = dataset_total.to_numpy()
+features_total = dataset_total.columns
+dataset = dataset_total.drop(columns = remove_categorical)
+features = dataset.columns
+data_npy = dataset.to_numpy()
 # Read data from sklearn load as same wine dataset is available there.
 
-wine = load_wine()
-features = wine.feature_names
-data_npy = wine.data
-dataset = pd.DataFrame(data_npy)
-features = [i.replace("_", " ") for i in features]
-dataset.columns = features
+# wine = load_wine()
+# features = wine.feature_names
+# data_npy = wine.data
+# dataset = pd.DataFrame(data_npy)
+# features = [i.replace("_", " ") for i in features]
+# dataset.columns = features
+
+num_clusters = 3
+
 std_sklr = StandardScaler()
 x = std_sklr.fit_transform(X = data_npy)
 pca_data = PCA(n_components=len(features))
@@ -95,7 +101,7 @@ def get_top_four_matrix(di = 3):
 
     cluster_features = [i for i in imp_features]
     featured_data = dataset[cluster_features]
-    kmeans = KMeans(n_clusters=3, random_state=0).fit(featured_data)
+    kmeans = KMeans(n_clusters=num_clusters, random_state=0).fit(data_npy)
 
     send_data = {}
     for i in range(0, np_data.shape[0]):
@@ -108,7 +114,7 @@ def get_top_four_matrix(di = 3):
 def get_mds():
     embeddings = MDS(n_components=2, random_state=0)
     for_mds = std_sklr.fit_transform(data_npy)
-    kmeans = KMeans(n_clusters=3, random_state=0).fit(for_mds)
+    kmeans = KMeans(n_clusters=num_clusters, random_state=0).fit(data_npy)
     transformed = embeddings.fit_transform(for_mds)
     # transformed = std_sklr.fit_transform(transformed)
     mds_data = []
@@ -118,12 +124,12 @@ def get_mds():
     return mds_data
 
 def get_pcp():
-    kmeans = KMeans(n_clusters=3, random_state=0).fit(data_npy)
+    kmeans = KMeans(n_clusters=num_clusters, random_state=0).fit(dataset_total_npy)
     pcp_data = []
-    for i in range(data_npy.shape[0]):
+    for i in range(dataset_total_npy.shape[0]):
         entry = {}
-        for j in range(data_npy.shape[1]):
-            entry[features[j]] = data_npy[i][j]
+        for j in range(dataset_total_npy.shape[1]):
+            entry[features_total[j]] = dataset_total_npy[i][j]
 
         entry['label'] = int(kmeans.labels_[i])
         pcp_data.append(entry)
@@ -134,6 +140,6 @@ def get_pcp():
     
     mds_attr_data = []
     for i in range(transformed2.shape[0]):
-        mds_attr_data.append({'dim1': transformed2[i][0], 'dim2': transformed2[i][1], "feature": features[i]})
+        mds_attr_data.append({'dim1': transformed2[i][0], 'dim2': transformed2[i][1], "feature": features_total[i]})
 
     return pcp_data, mds_attr_data

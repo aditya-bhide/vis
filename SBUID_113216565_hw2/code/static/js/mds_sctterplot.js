@@ -18,8 +18,8 @@ function mds_data_scatterplot(data) {
     yValue = d => d.value.dim2
     colorValue = d => d.value.label
 
-    xAxisLabel = 'Dimention 1'
-    yAxisLabel = 'Dimention 2'
+    xAxisLabel = 'Dimension 1'
+    yAxisLabel = 'Dimension 2'
 
     d3.select("#mds-scatterplot-graph-data").selectAll("*").remove()
     var svg = d3.select("#mds-scatterplot-graph-data")
@@ -34,7 +34,7 @@ function mds_data_scatterplot(data) {
 
     legend = svg.append("g")
         .attr("class", "legend")
-        .attr("transform", `translate(${width-120}, 0)`);
+        .attr("transform", `translate(${width-120}, -40)`);
 
     legend.append('rect')
         .attr("x", 0)

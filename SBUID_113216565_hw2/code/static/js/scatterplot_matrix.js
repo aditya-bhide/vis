@@ -3,8 +3,12 @@ function scatterplot_matrix(data) {
     console.log(d3.legend)
     n = 4;
     var width = 920,
-        size = (width / n) - 12,
-        padding = 40;
+        size = (width / n) - 20,
+        padding = 50;
+
+    const AxisTickFormat = number =>
+        d3.format('.3s')(number)
+        .replace('K', 'M');
 
     var xScale = d3.scaleLinear()
         .range([padding / 2, size - padding / 2]);
@@ -13,12 +17,14 @@ function scatterplot_matrix(data) {
         .range([size - padding / 2, padding / 2]);
 
     var xAxis = d3.axisBottom()
+        .tickFormat(AxisTickFormat)
         .scale(xScale)
-        .ticks(5);
+        .ticks(3);
 
     var yAxis = d3.axisLeft()
+        .tickFormat(AxisTickFormat)
         .scale(yScale)
-        .ticks(5);
+        .ticks(3);
 
     graph_title = "Scatterplot matrix"
     traits = []

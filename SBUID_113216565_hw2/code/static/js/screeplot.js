@@ -3,7 +3,7 @@ function scree_plot(data) {
     let svg_width = 800
     let svg_height = 550
     let circleRadius = 5
-    var margin = { top: 40, right: 30, bottom: 80, left: 100 },
+    var margin = { top: 40, right: 60, bottom: 80, left: 100 },
         width = svg_width - margin.left - margin.right,
         height = svg_height - margin.top - margin.bottom;
     var feature_count = 0
@@ -123,7 +123,6 @@ function scree_plot(data) {
         .attr('r', circleRadius)
         .style("fill", "steelblue");
 
-    d3.selectAll(".tooltip").remove()
     let div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
